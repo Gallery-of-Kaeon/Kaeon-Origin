@@ -6,6 +6,14 @@ var ui = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-
 
 document.title = "Kaeon Origin";
 
+let link = ui.create("link");
+
+link.type = 'image/x-icon';
+link.rel = 'shortcut icon';
+link.href = 'https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Logo/Kaeon%20FUSION%20Logo.png';
+
+document.getElementsByTagName("head")[0].appendChild(link);
+
 var text = ui.create("textarea");
 
 ui.extend(document.documentElement, text);
