@@ -4,6 +4,8 @@ var onePlus = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaSc
 
 var ui = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js");
 
+document.title = "Kaeon Origin";
+
 var text = ui.create("textarea");
 
 ui.extend(document.documentElement, text);
