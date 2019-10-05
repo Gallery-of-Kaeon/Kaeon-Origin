@@ -16,7 +16,7 @@ run.onclick = onRun;
 
 ui.extend(document.documentElement, run);
 
-var show = ui.create("Show ONE");
+var show = ui.create("button");
 
 show.innerHTML = "Show ONE";
 show.onclick = showONE;
