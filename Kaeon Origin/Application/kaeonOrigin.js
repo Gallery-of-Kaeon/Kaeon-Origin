@@ -7,6 +7,15 @@ var ui = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-
 
 document.title = "Kaeon Origin";
 
+ui.setStyle(
+	ui.root,
+	[
+		["margin", "0"],
+		["height", "100%"],
+		["overflow", "hidden"]
+	]
+);
+
 let tempCache = require.cache;
 
 require = function(path) {
@@ -301,9 +310,19 @@ function setTab(index) {
 }
 
 ui.extend(document.documentElement, ui.fill(ui.create("h1"), "Kaeon Origin"));
-ui.extend(document.documentElement, ui.create("br"));
 
 var options = ui.fill(ui.create("button"), "Options");
+
+ui.setStyle(
+	options,
+	[
+		["position", "absolute"],
+		["height", "10vh"],
+		["width", "25vw"],
+		["top", "0vh"],
+		["left", "75vw"]
+	]
+);
 
 options.onclick = function() {
 
@@ -323,9 +342,19 @@ options.onclick = function() {
 };
 
 ui.extend(ui.root, options);
-ui.extend(ui.root, ui.create("br"));
 
 var openAll = ui.fill(ui.create("button"), "Open All");
+
+ui.setStyle(
+	openAll,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "10vh"],
+		["left", "0vw"]
+	]
+);
 
 openAll.onclick = function() {
 	
@@ -376,6 +405,17 @@ ui.extend(ui.root, openAll);
 
 var saveAll = ui.fill(ui.create("button"), "Save All");
 
+ui.setStyle(
+	saveAll,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "10vh"],
+		["left", "7.5vw"]
+	]
+);
+
 saveAll.onclick = function() {
 
 	io.save(
@@ -384,9 +424,19 @@ saveAll.onclick = function() {
 };
 
 ui.extend(ui.root, saveAll);
-ui.extend(ui.root, ui.create("br"));
 
 var openButton = ui.fill(ui.create("button"), "Open");
+
+ui.setStyle(
+	openButton,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "15vh"],
+		["left", "0vw"]
+	]
+);
 
 openButton.onclick = function() {
 
@@ -432,6 +482,17 @@ ui.extend(ui.root, openButton);
 
 var newFile = ui.fill(ui.create("button"), "New");
 
+ui.setStyle(
+	newFile,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "15vh"],
+		["left", "7.5vw"]
+	]
+);
+
 newFile.onclick = function() {
 
 	addTab();
@@ -441,9 +502,19 @@ newFile.onclick = function() {
 };
 
 ui.extend(ui.root, newFile);
-ui.extend(ui.root, ui.create("br"));
 
 var remove = ui.fill(ui.create("button"), "Remove");
+
+ui.setStyle(
+	remove,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "15vw"],
+		["top", "20vh"],
+		["left", "0vw"]
+	]
+);
 
 remove.onclick = function() {
 
@@ -494,23 +565,40 @@ remove.onclick = function() {
 };
 
 ui.extend(ui.root, remove);
-ui.extend(ui.root, ui.create("br"));
 
 var files =
 	ui.setStyle(
 		ui.create("div"),
 		[
-			["width", "40vh"],
-			["height", "20vh"],
-			["border", "thick solid #000000"],
 			["overflow", "auto"]
 		]
 	);
 
+ui.setStyle(
+	files,
+	[
+		["position", "absolute"],
+		["height", "70vh"],
+		["width", "15vw"],
+		["top", "25vh"],
+		["left", "0vw"]
+	]
+);
+
 ui.extend(ui.root, files);
-ui.extend(ui.root, ui.create("br"));
 
 var all = ui.fill(ui.create("button"), "All");
+
+ui.setStyle(
+	all,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "95vh"],
+		["left", "0vw"]
+	]
+);
 
 all.onclick = function() {
 
@@ -522,6 +610,17 @@ ui.extend(ui.root, all);
 
 var none = ui.fill(ui.create("button"), "None");
 
+ui.setStyle(
+	none,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "7.5vw"],
+		["top", "95vh"],
+		["left", "7.5vw"]
+	]
+);
+
 none.onclick = function() {
 
 	for(let i = 0; i < tabs.length; i++)
@@ -529,9 +628,19 @@ none.onclick = function() {
 };
 
 ui.extend(ui.root, none);
-ui.extend(ui.root, ui.create("br"));
 
 var save = ui.fill(ui.create("button"), "Save");
+
+ui.setStyle(
+	save,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "17.5vw"],
+		["top", "10vh"],
+		["left", "15vw"]
+	]
+);
 
 save.onclick = function() {
 
@@ -545,6 +654,17 @@ save.onclick = function() {
 ui.extend(ui.root, save);
 
 var printButton = ui.fill(ui.create("button"), "Print");
+
+ui.setStyle(
+	printButton,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "17.5vw"],
+		["top", "10vh"],
+		["left", "32.5vw"]
+	]
+);
 
 printButton.onclick = function() {
 
@@ -562,7 +682,6 @@ printButton.onclick = function() {
 };
 
 ui.extend(ui.root, printButton);
-ui.extend(ui.root, ui.create("br"));
 
 var text =
 	ui.setStyle(
@@ -571,6 +690,18 @@ var text =
 			["white-space", "pre"]
 		]
 	);
+
+ui.setStyle(
+	text,
+	[
+		["resize", "none"],
+		["position", "absolute"],
+		["height", "50vh"],
+		["width", "35vw"],
+		["top", "15vh"],
+		["left", "15vw"]
+	]
+);
 
 text.onkeydown = function(event) {
 
@@ -590,9 +721,19 @@ text.onkeydown = function(event) {
 }
 
 ui.extend(document.documentElement, text);
-ui.extend(document.documentElement, ui.create("br"));
 
 var run = ui.create("button");
+
+ui.setStyle(
+	run,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "17.5vw"],
+		["top", "65vh"],
+		["left", "15vw"]
+	]
+);
 
 run.innerHTML = "Run Kaeon FUSION";
 run.onclick = onRunFUSION;
@@ -601,19 +742,39 @@ ui.extend(document.documentElement, run);
 
 var show = ui.create("button");
 
+ui.setStyle(
+	show,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "17.5vw"],
+		["top", "65vh"],
+		["left", "32.5vw"]
+	]
+);
+
 show.innerHTML = "Show ONE";
 show.onclick = showONE;
 
 ui.extend(document.documentElement, show);
-ui.extend(document.documentElement, ui.create("br"));
 
 var runJS = ui.create("button");
+
+ui.setStyle(
+	runJS,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "35vw"],
+		["top", "70vh"],
+		["left", "15vw"]
+	]
+);
 
 runJS.innerHTML = "Run JavaScript";
 runJS.onclick = onRunJS;
 
 ui.extend(document.documentElement, runJS);
-ui.extend(document.documentElement, ui.create("br"));
 
 var out =
 	ui.setStyle(
@@ -623,30 +784,115 @@ var out =
 		]
 	);
 
+ui.setStyle(
+	out,
+	[
+		["resize", "none"],
+		["position", "absolute"],
+		["height", "20vh"],
+		["width", "35vw"],
+		["top", "75vh"],
+		["left", "15vw"]
+	]
+);
+
 out.readOnly = true;
 
 ui.extend(document.documentElement, out);
-ui.extend(document.documentElement, ui.create("br"));
 
 var clear = ui.create("button");
+
+ui.setStyle(
+	clear,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "35vw"],
+		["top", "95vh"],
+		["left", "15vw"]
+	]
+);
 
 clear.innerHTML = "Clear";
 clear.onclick = clearOutput;
 
 ui.extend(document.documentElement, clear);
-ui.extend(document.documentElement, ui.create("br"));
 
-var display =
+ui.extend(
+	ui.root,
 	ui.setStyle(
 		ui.create("div"),
 		[
-			["width", "50vh"],
-			["height", "50vh"],
-			["border", "thick solid #000000"],
-			["overflow", "auto"],
-			["white-space", "pre"]
+			["background", "black"],
+			["position", "absolute"],
+			["height", "1vh"],
+			["width", "50vw"],
+			["top", "10vh"],
+			["left", "50vw"]
 		]
-	);
+	)
+);
+
+ui.extend(
+	ui.root,
+	ui.setStyle(
+		ui.create("div"),
+		[
+			["background", "black"],
+			["position", "absolute"],
+			["height", "1vh"],
+			["width", "50vw"],
+			["top", "99vh"],
+			["left", "50vw"]
+		]
+	)
+);
+
+ui.extend(
+	ui.root,
+	ui.setStyle(
+		ui.create("div"),
+		[
+			["background", "black"],
+			["position", "absolute"],
+			["height", "90vh"],
+			["width", "1vw"],
+			["top", "10vh"],
+			["left", "50vw"]
+		]
+	)
+);
+
+ui.extend(
+	ui.root,
+	ui.setStyle(
+		ui.create("div"),
+		[
+			["background", "black"],
+			["position", "absolute"],
+			["height", "90vh"],
+			["width", "1vw"],
+			["top", "10vh"],
+			["left", "99vw"]
+		]
+	)
+);
+
+var display = ui.create("div");
+
+ui.setStyle(
+	display,
+	[
+		["background", "white"],
+		["overflow", "auto"],
+		["white-space", "pre"],
+		["position", "absolute"],
+		["height", "88vh"],
+		["width", "48vw"],
+		["top", "11vh"],
+		["left", "51vw"]
+	]
+);
 
 ui.extend(document.documentElement, display);
 
@@ -657,12 +903,14 @@ function clearOutput() {
 	ui.setStyle(
 		display,
 		[
-			["width", "50vh"],
-			["height", "50vh"],
-			["border", "thick solid #000000"],
-			["overflow", "auto"],
 			["background", "white"],
-			["white-space", "pre"]
+			["overflow", "auto"],
+			["white-space", "pre"],
+			["position", "absolute"],
+			["height", "88vh"],
+			["width", "48vw"],
+			["top", "11vh"],
+			["left", "51vw"]
 		]
 	);
 
@@ -689,12 +937,14 @@ function onRun(callback) {
 	ui.setStyle(
 		display,
 		[
-			["width", "50vh"],
-			["height", "50vh"],
-			["border", "thick solid #000000"],
-			["overflow", "auto"],
 			["background", "white"],
-			["white-space", "pre"]
+			["overflow", "auto"],
+			["white-space", "pre"],
+			["position", "absolute"],
+			["height", "88vh"],
+			["width", "48vw"],
+			["top", "11vh"],
+			["left", "51vw"]
 		]
 	);
 
