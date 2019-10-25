@@ -696,8 +696,8 @@ ui.setStyle(
 	[
 		["resize", "none"],
 		["position", "absolute"],
-		["height", "50vh"],
-		["width", "35vw"],
+		["height", "49.5vh"],
+		["width", "34.6vw"],
 		["top", "15vh"],
 		["left", "15vw"]
 	]
@@ -790,7 +790,7 @@ ui.setStyle(
 		["resize", "none"],
 		["position", "absolute"],
 		["height", "20vh"],
-		["width", "35vw"],
+		["width", "34.6vw"],
 		["top", "75vh"],
 		["left", "15vw"]
 	]
