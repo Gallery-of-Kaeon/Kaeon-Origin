@@ -309,7 +309,21 @@ function setTab(index) {
 	text.value = tabs[index].data;
 }
 
-ui.extend(document.documentElement, ui.fill(ui.create("h1"), "Kaeon Origin"));
+ui.extend(
+	ui.root,
+	ui.setStyle(
+		ui.fill(
+			ui.create("h1"),
+			"Kaeon Origin"
+		),
+		[
+			["position", "absolute"],
+			["font-size", "4vh"],
+			["top", "0px"],
+			["left", "1vw"]
+		]
+	)
+);
 
 var options = ui.fill(ui.create("button"), "Options");
 
