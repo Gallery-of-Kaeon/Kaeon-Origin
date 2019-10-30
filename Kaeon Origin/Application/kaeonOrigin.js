@@ -698,10 +698,15 @@ printButton.onclick = function() {
 ui.extend(ui.root, printButton);
 
 var text =
-	ui.setStyle(
-		ui.create("textarea"),
+	ui.specify(
+		ui.setStyle(
+			ui.create("textarea"),
+			[
+				["white-space", "pre"]
+			]
+		),
 		[
-			["white-space", "pre"]
+			["spellcheck", "false"]
 		]
 	);
 
@@ -791,10 +796,15 @@ runJS.onclick = onRunJS;
 ui.extend(document.documentElement, runJS);
 
 var out =
-	ui.setStyle(
-		ui.create("textarea"),
+	ui.specify(
+		ui.setStyle(
+			ui.create("textarea"),
+			[
+				["white-space", "pre"]
+			]
+		),
 		[
-			["white-space", "pre"]
+			["spellcheck", "false"]
 		]
 	);
 
@@ -910,44 +920,44 @@ ui.setStyle(
 
 ui.extend(document.documentElement, display);
 
-function clearOutput() {
+console.log = function() {
 
-	out.value = "";
-
-	ui.setStyle(
-		display,
-		[
-			["background", "white"],
-			["overflow", "auto"],
-			["white-space", "pre"],
-			["position", "absolute"],
-			["height", "88vh"],
-			["width", "48vw"],
-			["top", "11vh"],
-			["left", "51vw"]
-		]
-	);
-
-	display.innerHTML = "";
+	for(let i = 0; i < arguments.length; i++)
+		out.value += "" + arguments[i] + " ";
+	
+	out.value += "\n";
 }
 
-function onRun(callback) {
+ui.root = display;
+
+var tempInterval = setInterval;
+var tempTimeout = setTimeout;
+
+var intervals = [];
+var timeouts = [];
+
+setInterval = function(interval, time) {
+
+	let value = tempInterval(interval, time);
+	intervals.push(value);
+
+	return value;
+}
+
+setTimeout = function(timeout, time) {
+
+	let value = tempTimeout(timeout, time);
+	timeouts.push(value);
+
+	return value;
+}
+
+function clearOutput() {
 
 	require.localCache = [[], []];
 
 	out.value = "";
 
-	let tempLog = console.log;
-	ui.root = display;
-
-	console.log = function() {
-
-		for(let i = 0; i < arguments.length; i++)
-			out.value += "" + arguments[i] + " ";
-		
-		out.value += "\n";
-	}
-
 	ui.setStyle(
 		display,
 		[
@@ -964,7 +974,16 @@ function onRun(callback) {
 
 	display.innerHTML = "";
 
-	tempDoc = display;
+	for(let i = 0; i < intervals.length; i++)
+		clearInterval(intervals[i]);
+
+	for(let i = 0; i < timeouts.length; i++)
+		clearTimeout(timeouts[i]);
+}
+
+function onRun(callback) {
+
+	clearOutput();
 
 	try {
 		callback();
@@ -973,9 +992,6 @@ function onRun(callback) {
 	catch(error) {
 		out.value = "ERROR:\n\n" + error;
 	}
-
-	console.log = tempLog;
-	ui.root = document.documentElement;
 }
 
 function onRunFUSION() {
@@ -1012,4 +1028,4 @@ function showONE() {
 load();
 setTab(0);
 
-setInterval(saveData, 1000);
+tempInterval(saveData, 1000);
