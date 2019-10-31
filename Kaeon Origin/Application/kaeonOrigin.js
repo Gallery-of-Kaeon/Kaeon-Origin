@@ -1,9 +1,4 @@
-var one = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/APIs/ONE/JavaScript/ONE.js");
-var kaeonFUSION = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/KaeonFUSION.js");
-var onePlus = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/ONEPlus.js");
 
-var io = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/IO/ioBrowser.js");
-var ui = require("https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js");
 
 document.title = "Kaeon Origin";
 
@@ -170,6 +165,41 @@ io.open = function(path) {
 	}
 
 	return tempIO(path);
+}
+
+let tempSave = io.save;
+
+io.save = function(content, path) {
+
+	if(path != null) {
+
+		for(let i = 0; i < tabs.length; i++) {
+
+			if(tabs[i].childNodes[1].innerHTML.toLowerCase() == path) {
+
+				tabs[i].data = content;
+
+				if(i == currentTab)
+					text.value = content;
+
+				saveData();
+
+				return;
+			}
+		}
+
+		addTab(createTab(content));
+
+		tabs[tabs.length - 1].childNodes[1].innerHTML = path;
+		tabs[tabs.length - 1].childNodes[1].style.background = "white";
+
+		tabs[tabs.length - 1].named = true;
+
+		saveData();
+	}
+
+	else
+		tempSave(path);
 }
 
 var tabs = [];
@@ -340,19 +370,128 @@ ui.setStyle(
 
 options.onclick = function() {
 
+	let standardLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/Standard.js";
+
+	let oneLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/APIs/ONE/JavaScript/ONE.js";
+	let fusionLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/FUSION.js";
+	let kaeonFUSIONLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/KaeonFUSION.js";
+	let stoneLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Philosophers-Stone/master/Philosopher's%20Stone/API/JavaScript/PhilosophersStone.js";
+	let onePlusLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/ONEPlus.js";
+	let ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/IO/ioBrowser.js";
+	let uiLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js";
+
+	let fusionRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedOP=";
+	let jsRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedJS=";
+
 	clearOutput();
 
-	ui.extend(display, ui.fill(ui.create("h1"), "Help:"));
-	ui.extend(display, ui.create("br"));
+	ui.extend(display, ui.fill(ui.create("center"), "<h1>Resources</h1>"));
+
+	ui.extend(display, ui.fill(ui.create("h2"), "Kaeon FUSION Resources"));
 
 	ui.extend(
 		display,
 		ui.fill(
 			ui.create("p"),
-			"Standard Interface: " +
-			"https://raw.githubusercontent.com/Gallery-of-Kaeon/" +
-			"JavaScript-Utilities/master/JavaScript%20Utilities/" +
-			"United%20Bootstrap/Standard.js"));
+			"Standard Interface: <a href=\"" +
+			standardLink +
+			"\" target=\"_blank\">" +
+			standardLink +
+			"</a>"));
+	
+	ui.extend(display, ui.fill(ui.create("h2"), "JavaScript Resources"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"ONE Module: <a href=\"" +
+			oneLink +
+			"\" target=\"_blank\">" +
+			oneLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"FUSION Module: <a href=\"" +
+			fusionLink +
+			"\" target=\"_blank\">" +
+			fusionLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"Kaeon FUSION Module: <a href=\"" +
+			kaeonFUSIONLink +
+			"\" target=\"_blank\">" +
+			kaeonFUSIONLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"Philosopher\'s Stone Module: <a href=\"" +
+			stoneLink +
+			"\" target=\"_blank\">" +
+			stoneLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"ONE+ Module: <a href=\"" +
+			onePlusLink +
+			"\" target=\"_blank\">" +
+			onePlusLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"IO Module: <a href=\"" +
+			ioLink +
+			"\" target=\"_blank\">" +
+			ioLink +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"UI Module: <a href=\"" +
+			uiLink +
+			"\" target=\"_blank\">" +
+			uiLink +
+			"</a>"));
+
+	ui.extend(display, ui.fill(ui.create("h2"), "GhostHost Roots"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"Kaeon FUSION GhostHost Root: <a href=\"" +
+			fusionRoot +
+			"\" target=\"_blank\">" +
+			fusionRoot +
+			"</a>"));
+
+	ui.extend(
+		display,
+		ui.fill(
+			ui.create("p"),
+			"JavaScript GhostHost Root: <a href=\"" +
+			jsRoot +
+			"\" target=\"_blank\">" +
+			jsRoot +
+			"</a>"));
 };
 
 ui.extend(ui.root, options);
@@ -432,7 +571,7 @@ ui.setStyle(
 
 saveAll.onclick = function() {
 
-	io.save(
+	tempSave(
 		window.localStorage.getItem("kaeonOriginData"),
 		"Kaeon Origin Workspace.op");
 };
@@ -650,15 +789,15 @@ ui.setStyle(
 	[
 		["position", "absolute"],
 		["height", "5vh"],
-		["width", "17.5vw"],
+		["width", "17.5vw"], // ["width", "8.75vw"],
 		["top", "10vh"],
-		["left", "15vw"]
+		["left", "15vw"] // ["left", "15vw"]
 	]
 );
 
 save.onclick = function() {
 
-	io.save(
+	tempSave(
 		text.value,
 		tabs[currentTab].named ?
 			tabs[currentTab].childNodes[1].innerHTML :
@@ -674,9 +813,9 @@ ui.setStyle(
 	[
 		["position", "absolute"],
 		["height", "5vh"],
-		["width", "17.5vw"],
+		["width", "17.5vw"], // ["width", "8.75vw"],
 		["top", "10vh"],
-		["left", "32.5vw"]
+		["left", "32.5vw"] // ["left", "23.75vw"]
 	]
 );
 
@@ -696,6 +835,93 @@ printButton.onclick = function() {
 };
 
 ui.extend(ui.root, printButton);
+
+var setURLArgs = ui.fill(ui.create("button"), "Set URL");
+
+ui.setStyle(
+	setURLArgs,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "8.75vw"],
+		["top", "10vh"],
+		["left", "32.5vw"]
+	]
+);
+
+setURLArgs.onclick = function() {
+
+}
+
+// ui.extend(ui.root, setURLArgs);
+
+var setArgs = ui.fill(ui.create("button"), "Set Arguments");
+
+ui.setStyle(
+	setArgs,
+	[
+		["position", "absolute"],
+		["height", "5vh"],
+		["width", "11.66vw"], // ["width", "8.75vw"],
+		["top", "10vh"],
+		["left", "38.34vw"] // ["left", "41.25vw"]
+	]
+);
+
+// var arguments = [];
+// var args = "";
+
+setArgs.onclick = function() {
+	
+	let string =
+		prompt(
+			"Current Arguments: " + args + "\nEnter the program arguments:");
+
+	if(string == null)
+		return;
+	
+	args = string;
+	
+	arguments = [];
+
+	let argument = "";
+	let inQuote = false;
+
+	for(let i = 0; i < string.length; i++) {
+
+		if(string.charAt(i) == '\"') {
+
+			inQuote = !inQuote;
+
+			continue;
+		}
+
+		if(string.charAt(i) == '\\' && i < string.length - 1) {
+
+			argument += string.charAt(i + 1);
+			i++;
+
+			continue;
+		}
+
+		if(!inQuote &&
+			((string.charAt(i) == ' ') || (string.charAt(i) == '\t')) &&
+			argument.length > 0) {
+
+			arguments.push(argument);
+			argument = "";
+
+			continue;
+		}
+
+		argument += string.charAt(i);
+	}
+
+	if(argument.length > 0)
+		arguments.push(argument);
+}
+
+// ui.extend(ui.root, setArgs);
 
 var text =
 	ui.specify(
