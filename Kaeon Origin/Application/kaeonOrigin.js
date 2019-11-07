@@ -964,22 +964,46 @@ ui.setStyle(
 	]
 );
 
-text.onkeydown = function(event) {
+text.addEventListener(
+	"keydown",
+	function(event) {
 
-	if(event.keyCode == 9 || event.which == 9) {
+		if(event.keyCode == 9 || event.which == 9) {
 
-		event.preventDefault();
-		
-		let start = this.selectionStart;
-		
-		this.value =
-			this.value.substring(0, this.selectionStart) +
-			"\t" +
-			this.value.substring(this.selectionEnd);
+			event.preventDefault();
 			
-		this.selectionEnd = start + 1; 
-	}
-}
+			var start = this.selectionStart;
+			var end = this.selectionEnd;
+
+			if(start != end) {
+
+				while(start > 0) {
+					
+					if(text.value.charAt(start) == "\n")
+						break;
+
+					start--;
+				}
+
+				this.selectionStart = start;
+
+				document.execCommand(
+					"insertText",
+					false,
+					event.shiftKey ?
+						text.value.
+							substring(start, end).split("\n\t").join("\n") :
+						text.value.
+							substring(start, end).split("\n").join("\n\t")
+				);
+			}
+			
+			else
+				document.execCommand("insertText", false, "\t");
+		}
+	},
+	false
+);
 
 ui.extend(document.documentElement, text);
 
