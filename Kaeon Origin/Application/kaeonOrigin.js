@@ -972,10 +972,21 @@ text.addEventListener(
 
 			event.preventDefault();
 			
-			var start = this.selectionStart;
-			var end = this.selectionEnd;
+			let start = this.selectionStart;
+			let end = this.selectionEnd;
 
 			if(start != end) {
+
+				let value = text.value.substring(start, end).indexOf("\n");
+
+				if(value == -1) {
+
+					document.execCommand("insertText", false, "\t");
+
+					return;
+				}
+
+				let startValue = start;
 
 				while(start > 0) {
 					
@@ -987,15 +998,40 @@ text.addEventListener(
 
 				this.selectionStart = start;
 
-				document.execCommand(
-					"insertText",
-					false,
-					event.shiftKey ?
-						text.value.
-							substring(start, end).split("\n\t").join("\n") :
-						text.value.
-							substring(start, end).split("\n").join("\n\t")
-				);
+				let insert = text.value.substring(start, end);
+
+				if(start == 0) {
+
+					if(!event.shiftKey)
+						insert = "\t" + insert;
+					
+					else if(
+						insert.charAt(0) == "\t" ||
+						insert.charAt(0) == "\n") {
+
+						insert = insert.substring(1);
+					}
+				}
+
+				if(event.shiftKey)
+					insert = insert.split("\n\t").join("\n");
+
+				else
+					insert = insert.split("\n").join("\n\t");
+
+				let shifted =
+					insert !=
+					text.value.substring(
+						this.selectionStart, this.selectionEnd);
+
+				document.execCommand("insertText", false, insert);
+
+				this.selectionStart =
+					startValue +
+					(shifted ?
+						(event.shiftKey ? -1 : 1) : 0);
+
+				this.selectionEnd = start + insert.length;
 			}
 			
 			else
