@@ -968,12 +968,14 @@ text.addEventListener(
 	"keydown",
 	function(event) {
 
+		let scrollY = text.scrollTop;
+			
+		let start = this.selectionStart;
+		let end = this.selectionEnd;
+
 		if(event.keyCode == 9 || event.which == 9) {
 
 			event.preventDefault();
-			
-			let start = this.selectionStart;
-			let end = this.selectionEnd;
 
 			if(start != end) {
 
@@ -1037,6 +1039,9 @@ text.addEventListener(
 			else
 				document.execCommand("insertText", false, "\t");
 		}
+
+		if(start != end)
+			text.scrollTop = scrollY;
 	},
 	false
 );
