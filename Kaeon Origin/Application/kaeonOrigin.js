@@ -202,6 +202,17 @@ else
 
 if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
+	ui.setStyle(
+		document.documentElement,
+		[
+			["position", "absolute"],
+			["left", "0%"],
+			["top", "0%"],
+			["width", "100%"],
+			["height", "100%"]
+		]
+	);
+
 	let code = "";
 
 	let id =
