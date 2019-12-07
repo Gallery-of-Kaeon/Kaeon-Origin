@@ -1330,6 +1330,7 @@ else {
 	ui.setStyle(
 		display,
 		[
+			["overflow", "auto"],
 			["background", "white"],
 			["white-space", "pre"],
 			["position", "absolute"],
@@ -1373,6 +1374,7 @@ else {
 		ui.setStyle(
 			display,
 			[
+				["overflow", "auto"],
 				["background", "white"],
 				["white-space", "pre"],
 				["position", "absolute"],
