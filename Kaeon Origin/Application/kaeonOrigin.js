@@ -639,17 +639,6 @@ else {
 				"\" target=\"_blank\">" +
 				jsRoot +
 				"</a>"));
-
-		ui.extend(ui.root, ui.fill(ui.create("h2"), "Kaeon Origin Utilities"));
-
-		ui.extend(
-			ui.root,
-			ui.fill(
-				ui.create("p"),
-				"Kaeon Origin Rendering Area CSS Selector: " +
-				"<a href=\"javascript:undefined\">" +
-				"html > div:nth-child(24)" +
-				"</a>"));
 	};
 
 	ui.extend(ui.root, options);
