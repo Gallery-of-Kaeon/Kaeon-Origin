@@ -212,10 +212,10 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 		[
 			["white-space", "pre"],
 			["position", "fixed"],
-			["left", "0vw"],
-			["top", "70vh"],
-			["width", "100vw"],
-			["height", "30vh"],
+			["left", "0%"],
+			["top", "70%"],
+			["width", "100%"],
+			["height", "30%"],
 			["background", "white"],
 			["border", "solid black"]
 		]
@@ -1496,12 +1496,35 @@ else {
 
 	function showONE() {
 
+		display.innerHTML = "";
+
+		var oneText = ui.setStyle(
+			ui.specify(
+				ui.create("textarea"),
+				[
+					["spellcheck", "false"]
+				]
+			),
+			[
+				["overflow", "auto"],
+				["left", "0vw"],
+				["top", "0vh"],
+				["width", "100%"],
+				["height", "100%"],
+				["white-space", "pre"]
+			]
+		);
+
+		oneText.readOnly = true;
+
+		ui.extend(display, oneText);
+
 		try {
-			out.value = one.writeONE(onePlus.readONEPlus(text.value));
+			oneText.value = one.writeONE(onePlus.readONEPlus(text.value));
 		}
 
 		catch(error) {
-			out.value = "ERROR: INVALID ONE+";
+			oneText.value = "ERROR: INVALID ONE+";
 		}
 	}
 
