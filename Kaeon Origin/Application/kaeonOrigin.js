@@ -1396,6 +1396,13 @@ else {
 
 	function onRun(type) {
 
+		ui.setStyle(
+			display,
+			[
+				["overflow", "auto"]
+			]
+		);
+
 		display.innerHTML = "";
 
 		ui.extend(
@@ -1436,6 +1443,13 @@ else {
 	}
 
 	function showONE() {
+
+		ui.setStyle(
+			display,
+			[
+				["overflow", "hidden"]
+			]
+		);
 
 		display.innerHTML = "";
 
