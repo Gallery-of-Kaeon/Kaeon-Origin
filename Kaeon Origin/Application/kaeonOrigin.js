@@ -217,7 +217,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 			["width", "100%"],
 			["height", "30%"],
 			["background", "white"],
-			["border", "solid black"]
+			["border-top", "solid black"]
 		]
 	);
 
@@ -1258,22 +1258,6 @@ else {
 			]
 		);
 
-	ui.setStyle(
-		out,
-		[
-			["resize", "none"],
-			["position", "absolute"],
-			["height", "20vh"],
-			["width", "34.6vw"],
-			["top", "75vh"],
-			["left", "15vw"]
-		]
-	);
-
-	out.readOnly = true;
-
-	// ui.extend(document.documentElement, out);
-
 	var clear = ui.create("button");
 
 	ui.setStyle(
@@ -1358,7 +1342,6 @@ else {
 		display,
 		[
 			["background", "white"],
-			["overflow", "auto"],
 			["white-space", "pre"],
 			["position", "absolute"],
 			["height", "88vh"],
@@ -1369,14 +1352,6 @@ else {
 	);
 
 	ui.extend(document.documentElement, display);
-
-	// console.log = function() {
-
-	// 	for(let i = 0; i < arguments.length; i++)
-	// 		out.value += "" + arguments[i] + " ";
-		
-	// 	out.value += "\n";
-	// }
 
 	ui.root = display;
 
@@ -1406,13 +1381,10 @@ else {
 
 		require.localCache = [[], []];
 
-		out.value = "";
-
 		ui.setStyle(
 			display,
 			[
 				["background", "white"],
-				["overflow", "auto"],
 				["white-space", "pre"],
 				["position", "absolute"],
 				["height", "88vh"],
@@ -1431,67 +1403,45 @@ else {
 			clearTimeout(timeouts[i]);
 	}
 
-	function onRun(callback) {
+	function onRun(type) {
 
-		clearOutput();
+		display.innerHTML = "";
 
-		try {
-			callback();
-		}
-
-		catch(error) {
-			out.value = "ERROR:\n\n" + error;
-		}
+		ui.extend(
+			display,
+			ui.setStyle(
+				ui.specify(
+					ui.create("iframe"),
+					[
+						[
+							"src",
+							originLink +
+								"&kaeonorigin" +
+								type +
+								"=" +
+								currentTab
+						],
+						["frameborder", "0"]
+					]
+				),
+				[
+					["width", "100%"],
+					["height", "100%"],
+					["left", "0%"],
+					["top", "0%"],
+					["position", "absolute"],
+					["overflow", "auto"]
+				]
+			)
+		);
 	}
 
 	function onRunFUSION() {
-
-		display.innerHTML = "";
-
-		ui.extend(
-			display,
-			ui.setStyle(
-				ui.specify(
-					ui.create("iframe"),
-					[
-						["src", originLink + "&kaeonoriginfusion=" + currentTab]
-					]
-				),
-				[
-					["width", "100vw"],
-					["height", "100vh"],
-					["left", "0vw"],
-					["top", "0vh"],
-					["position", "absolute"],
-					["overflow", "auto"]
-				]
-			)
-		);
+		onRun("fusion");
 	}
 
 	function onRunJS() {
-
-		display.innerHTML = "";
-
-		ui.extend(
-			display,
-			ui.setStyle(
-				ui.specify(
-					ui.create("iframe"),
-					[
-						["src", originLink + "&kaeonoriginjs=" + currentTab]
-					]
-				),
-				[
-					["width", "100vw"],
-					["height", "100vh"],
-					["left", "0vw"],
-					["top", "0vh"],
-					["position", "absolute"],
-					["overflow", "auto"]
-				]
-			)
-		);
+		onRun("js");
 	}
 
 	function showONE() {
@@ -1506,6 +1456,7 @@ else {
 				]
 			),
 			[
+				["resize", "none"],
 				["overflow", "auto"],
 				["left", "0vw"],
 				["top", "0vh"],
