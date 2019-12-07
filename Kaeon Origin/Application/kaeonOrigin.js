@@ -188,6 +188,18 @@ require = function(path) {
 require.cache = tempCache;
 require.onePlus = onePlus;
 
+var showConsole = window.localStorage.getItem("kaeonOriginConsole");
+
+if(showConsole == null) {
+
+	window.localStorage.setItem("kaeonOriginConsole", "true");
+
+	showConsole = true;
+}
+
+else
+	showConsole = showConsole.toLowerCase() == "true";
+
 if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
 	let code = "";
@@ -207,41 +219,44 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
 	}
 
-	var output = ui.setStyle(
-		ui.create("textarea"),
-		[
-			["white-space", "pre"],
-			["position", "fixed"],
-			["left", "0%"],
-			["top", "70%"],
-			["width", "100%"],
-			["height", "30%"],
-			["background", "white"],
-			["border-top", "solid black"]
-		]
-	);
-
-	ui.extend(ui.root, output);
-
 	let isJS = urlArgs.kaeonoriginjs != null;
 
-	if(isJS) {
+	if(showConsole) {
 
-		console.log = function() {
+		var output = ui.setStyle(
+			ui.create("textarea"),
+			[
+				["white-space", "pre"],
+				["position", "fixed"],
+				["left", "0%"],
+				["top", "70%"],
+				["width", "100%"],
+				["height", "30%"],
+				["background", "white"],
+				["border-top", "solid black"]
+			]
+		);
 
-			for(let i = 0; i < arguments.length; i++)
-				output.value += "" + arguments[i] + " ";
+		ui.extend(ui.root, output);
 
-			output.value += "\n";
+		if(isJS) {
+
+			console.log = function() {
+
+				for(let i = 0; i < arguments.length; i++)
+					output.value += "" + arguments[i] + " ";
+
+				output.value += "\n";
+			}
 		}
-	}
 
-	else {
+		else {
 
-		console.log = function() {
+			console.log = function() {
 
-			for(let i = 0; i < arguments.length; i++)
-				output.value += "" + arguments[i];
+				for(let i = 0; i < arguments.length; i++)
+					output.value += "" + arguments[i];
+			}
 		}
 	}
 
@@ -531,6 +546,37 @@ else {
 	options.onclick = function() {
 
 		clearOutput();
+
+		ui.extend(ui.root, ui.fill(ui.create("center"), "<h1>Settings</h1>"));
+		
+		var toggle = ui.fill(
+			ui.create("button"),
+			showConsole ?
+				"Hide Console" :
+				"Show Console"
+		);
+
+		toggle.onclick = function() {
+
+			if(showConsole) {
+
+				showConsole = false;
+				window.localStorage.setItem("kaeonOriginConsole", "false");
+
+				toggle.innerHTML = "Show Console";
+			}
+
+			else {
+
+				showConsole = true;
+				window.localStorage.setItem("kaeonOriginConsole", "true");
+
+				toggle.innerHTML = "Hide Console";
+			}
+		}
+
+		ui.extend(ui.root, toggle);
+		ui.extend(ui.root, ui.create("br"));
 
 		ui.extend(ui.root, ui.fill(ui.create("center"), "<h1>Resources</h1>"));
 
