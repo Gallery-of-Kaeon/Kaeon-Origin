@@ -7,6 +7,8 @@ var fusionLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-
 var kaeonFUSIONLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/KaeonFUSION.js";
 var stoneLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Philosophers-Stone/master/Philosopher's%20Stone/API/JavaScript/PhilosophersStone.js";
 var onePlusLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/ONEPlus.js";
+var universalPreprocessorLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/UniversalPreprocessor.js";
+var oneSuiteLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/ONESuite.js";
 var ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/IO/ioBrowser.js";
 var uiLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js";
 
@@ -16,6 +18,7 @@ var jsRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercon
 var one = require(oneLink);
 var kaeonFUSION = require(kaeonFUSIONLink);
 var onePlus = require(onePlusLink);
+var oneSuite = require(oneSuiteLink);
 
 var io = require(ioLink);
 var ui = require(uiLink);
@@ -200,6 +203,37 @@ if(showConsole == null) {
 else
 	showConsole = showConsole.toLowerCase() == "true";
 
+var openFullscreen = function(element) {
+
+	if(element.requestFullscreen)
+		element.requestFullscreen();
+	
+	else if(element.mozRequestFullScreen) /* Firefox */
+		element.mozRequestFullScreen();
+	
+	else if(element.webkitRequestFullscreen) /* Chrome, Safari and Opera */
+		element.webkitRequestFullscreen();
+	
+	else if(element.msRequestFullscreen) /* IE/Edge */
+		element.msRequestFullscreen();
+}
+
+/* Close fullscreen */
+var closeFullscreen = function() {
+
+	if(document.exitFullscreen)
+		document.exitFullscreen();
+	
+	else if(document.mozCancelFullScreen) /* Firefox */
+		document.mozCancelFullScreen();
+	
+	else if(document.webkitExitFullscreen) /* Chrome, Safari and Opera */
+		document.webkitExitFullscreen();
+	
+	else if(document.msExitFullscreen) /* IE/Edge */
+		document.msExitFullscreen();
+}
+
 if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
 	ui.setStyle(
@@ -309,10 +343,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 	else {
 
 		try {
-
-			(new kaeonFUSION.KaeonFUSION()).process(
-				onePlus.readONEPlus(code.split("\r").join())
-			);
+			oneSuite.process(code);
 		}
 
 		catch(error) {
@@ -391,6 +422,8 @@ else {
 	var tabs = [];
 	var currentTab = 0;
 
+	var outTabs = [];
+
 	function createTab(data, index, name) {
 
 		if(index == null)
@@ -430,6 +463,8 @@ else {
 		ui.extend(tab, check);
 		ui.extend(tab, button);
 		ui.extend(tab, nameButton);
+
+		tab.button = button;
 
 		tab.data = data != null ? data : "";
 
@@ -525,32 +560,16 @@ else {
 		text.value = tabs[index].data;
 	}
 
-	ui.extend(
-		ui.root,
-		ui.setStyle(
-			ui.fill(
-				ui.create("h1"),
-				"Kaeon Origin"
-			),
-			[
-				["position", "absolute"],
-				["font-size", "4vh"],
-				["top", "0px"],
-				["left", "1vw"]
-			]
-		)
-	);
-
 	var options = ui.fill(ui.create("button"), "Options");
 
 	ui.setStyle(
 		options,
 		[
 			["position", "absolute"],
-			["height", "10vh"],
-			["width", "25vw"],
+			["height", "5vh"],
+			["width", "15vw"],
 			["top", "0vh"],
-			["left", "75vw"]
+			["left", "85vw"]
 		]
 	);
 
@@ -659,6 +678,26 @@ else {
 			ui.root,
 			ui.fill(
 				ui.create("p"),
+				"Universal Preprocessor Module: <a href=\"" +
+				universalPreprocessorLink +
+				"\" target=\"_blank\">" +
+				universalPreprocessorLink +
+				"</a>"));
+
+		ui.extend(
+			ui.root,
+			ui.fill(
+				ui.create("p"),
+				"ONE Suite Module: <a href=\"" +
+				oneSuiteLink +
+				"\" target=\"_blank\">" +
+				oneSuiteLink +
+				"</a>"));
+
+		ui.extend(
+			ui.root,
+			ui.fill(
+				ui.create("p"),
 				"IO Module: <a href=\"" +
 				ioLink +
 				"\" target=\"_blank\">" +
@@ -708,7 +747,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "7.5vw"],
-			["top", "10vh"],
+			["top", "0vh"],
 			["left", "0vw"]
 		]
 	);
@@ -768,7 +807,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "7.5vw"],
-			["top", "10vh"],
+			["top", "0vh"],
 			["left", "7.5vw"]
 		]
 	);
@@ -790,7 +829,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "7.5vw"],
-			["top", "15vh"],
+			["top", "5vh"],
 			["left", "0vw"]
 		]
 	);
@@ -845,7 +884,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "7.5vw"],
-			["top", "15vh"],
+			["top", "5vh"],
 			["left", "7.5vw"]
 		]
 	);
@@ -868,7 +907,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "15vw"],
-			["top", "20vh"],
+			["top", "90vh"],
 			["left", "0vw"]
 		]
 	);
@@ -935,9 +974,9 @@ else {
 		files,
 		[
 			["position", "absolute"],
-			["height", "70vh"],
+			["height", "80vh"],
 			["width", "15vw"],
-			["top", "25vh"],
+			["top", "10vh"],
 			["left", "0vw"]
 		]
 	);
@@ -994,7 +1033,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "17.5vw"], // ["width", "8.75vw"],
-			["top", "10vh"],
+			["top", "0vh"],
 			["left", "15vw"] // ["left", "15vw"]
 		]
 	);
@@ -1018,7 +1057,7 @@ else {
 			["position", "absolute"],
 			["height", "5vh"],
 			["width", "17.5vw"], // ["width", "8.75vw"],
-			["top", "10vh"],
+			["top", "0vh"],
 			["left", "32.5vw"] // ["left", "23.75vw"]
 		]
 	);
@@ -1145,9 +1184,9 @@ else {
 		[
 			["resize", "none"],
 			["position", "absolute"],
-			["height", "74.5vh"],
+			["height", "84.5vh"],
 			["width", "34.6vw"],
-			["top", "15vh"],
+			["top", "5vh"],
 			["left", "15vw"],
 			["overflow", "auto"]
 		]
@@ -1269,7 +1308,10 @@ else {
 	);
 
 	show.innerHTML = "Show ONE";
-	show.onclick = showONE;
+
+	show.onclick = function() {
+		showONE(false);
+	};
 
 	ui.extend(document.documentElement, show);
 
@@ -1304,10 +1346,10 @@ else {
 			]
 		);
 
-	var clear = ui.create("button");
+	var preprocess = ui.create("button");
 
 	ui.setStyle(
-		clear,
+		preprocess,
 		[
 			["position", "absolute"],
 			["height", "5vh"],
@@ -1317,70 +1359,103 @@ else {
 		]
 	);
 
-	clear.innerHTML = "Clear";
-	clear.onclick = clearOutput;
+	preprocess.innerHTML = "Preprocess";
 
-	ui.extend(document.documentElement, clear);
+	preprocess.onclick = function() {
+		showONE(true);
+	};
 
-	ui.extend(
-		ui.root,
-		ui.setStyle(
-			ui.create("div"),
-			[
-				["background", "black"],
-				["position", "absolute"],
-				["height", "1vh"],
-				["width", "50vw"],
-				["top", "10vh"],
-				["left", "50vw"]
-			]
-		)
+	ui.extend(document.documentElement, preprocess);
+
+	// ui.extend(
+	// 	ui.root,
+	// 	ui.setStyle(
+	// 		ui.create("div"),
+	// 		[
+	// 			["background", "black"],
+	// 			["position", "absolute"],
+	// 			["height", "1vh"],
+	// 			["width", "50vw"],
+	// 			["top", "5vh"],
+	// 			["left", "50vw"]
+	// 		]
+	// 	)
+	// );
+
+	// ui.extend(
+	// 	ui.root,
+	// 	ui.setStyle(
+	// 		ui.create("div"),
+	// 		[
+	// 			["background", "black"],
+	// 			["position", "absolute"],
+	// 			["height", "1vh"],
+	// 			["width", "50vw"],
+	// 			["top", "99vh"],
+	// 			["left", "50vw"]
+	// 		]
+	// 	)
+	// );
+
+	// ui.extend(
+	// 	ui.root,
+	// 	ui.setStyle(
+	// 		ui.create("div"),
+	// 		[
+	// 			["background", "black"],
+	// 			["position", "absolute"],
+	// 			["height", "95vh"],
+	// 			["width", "1vw"],
+	// 			["top", "5vh"],
+	// 			["left", "50vw"]
+	// 		]
+	// 	)
+	// );
+
+	// ui.extend(
+	// 	ui.root,
+	// 	ui.setStyle(
+	// 		ui.create("div"),
+	// 		[
+	// 			["background", "black"],
+	// 			["position", "absolute"],
+	// 			["height", "95vh"],
+	// 			["width", "1vw"],
+	// 			["top", "5vh"],
+	// 			["left", "99vw"]
+	// 		]
+	// 	)
+	// );
+
+	var fullscreen = ui.fill(ui.create("button"), "Fullscreen");
+
+	ui.setStyle(
+		fullscreen,
+		[
+			["position", "absolute"],
+			["height", "5vh"],
+			["width", "35vw"],
+			["top", "0vh"],
+			["left", "50vw"]
+		]
 	);
 
-	ui.extend(
-		ui.root,
-		ui.setStyle(
-			ui.create("div"),
-			[
-				["background", "black"],
-				["position", "absolute"],
-				["height", "1vh"],
-				["width", "50vw"],
-				["top", "99vh"],
-				["left", "50vw"]
-			]
-		)
-	);
+	fullscreen.onclick = function() {
 
-	ui.extend(
-		ui.root,
-		ui.setStyle(
-			ui.create("div"),
-			[
-				["background", "black"],
-				["position", "absolute"],
-				["height", "90vh"],
-				["width", "1vw"],
-				["top", "10vh"],
-				["left", "50vw"]
-			]
-		)
-	);
+		openFullscreen(display);
 
-	ui.extend(
-		ui.root,
-		ui.setStyle(
-			ui.create("div"),
-			[
-				["background", "black"],
-				["position", "absolute"],
-				["height", "90vh"],
-				["width", "1vw"],
-				["top", "10vh"],
-				["left", "99vw"]
-			]
-		)
-	);
+		display.onkeypress = function(event) {
+
+			if(event.keyCode != 27)
+				return;
+
+			closeFullscreen();
+
+			display.onkeypress = null;
+		}
+	};
+
+	ui.extend(ui.root, fullscreen);
 
 	var display = ui.create("div");
 
@@ -1391,14 +1466,136 @@ else {
 			["background", "white"],
 			["white-space", "pre"],
 			["position", "absolute"],
-			["height", "88vh"],
-			["width", "48vw"],
-			["top", "11vh"],
-			["left", "51vw"]
+			["height", "95vh"],
+			["width", "35vw"],
+			["top", "5vh"],
+			["left", "50vw"]
 		]
 	);
 
 	ui.extend(document.documentElement, display);
+
+	var outs = ui.create("div");
+
+	ui.setStyle(
+		outs,
+		[
+			["overflow", "auto"],
+			["background", "white"],
+			["border-left", "1px solid black"],
+			["white-space", "pre"],
+			["position", "absolute"],
+			["height", "85vh"],
+			["width", "15vw"],
+			["top", "5vh"],
+			["left", "85vw"]
+		]
+	);
+
+	ui.extend(document.documentElement, outs);
+
+	var removeOut = ui.fill(ui.create("button"), "Remove");
+
+	ui.setStyle(
+		removeOut,
+		[
+			["position", "absolute"],
+			["height", "5vh"],
+			["width", "15vw"],
+			["top", "90vh"],
+			["left", "85vw"]
+		]
+	);
+
+	removeOut.onclick = function() {
+
+		let current = false;
+
+		for(let i = 0; i < outTabs.length; i++) {
+
+			if(outTabs[i].childNodes[0].checked) {
+
+				if(outTabs[i].button.style.background == "green")
+					current = true;
+
+				outs.removeChild(outTabs[i]);
+
+				outTabs.splice(i, 1);
+				i--;
+			}
+		}
+
+		if(current) {
+
+			display.innerHTML = "";
+
+			if(outTabs.length > 0) {
+
+				outTabs[0].style.background = "green";
+
+				ui.extend(display, outTabs[0].frame);
+			}
+		}
+	};
+
+	ui.extend(ui.root, removeOut);
+
+	var allOut = ui.fill(ui.create("button"), "All");
+
+	ui.setStyle(
+		allOut,
+		[
+			["position", "absolute"],
+			["height", "5vh"],
+			["width", "7.5vw"],
+			["top", "95vh"],
+			["left", "85vw"]
+		]
+	);
+
+	allOut.onclick = function() {
+
+		for(let i = 0; i < outTabs.length; i++)
+			outTabs[i].childNodes[0].checked = true;
+	};
+
+	ui.extend(ui.root, allOut);
+
+	var noneOut = ui.fill(ui.create("button"), "None");
+
+	ui.setStyle(
+		noneOut,
+		[
+			["position", "absolute"],
+			["height", "5vh"],
+			["width", "7.5vw"],
+			["top", "95vh"],
+			["left", "92.5vw"]
+		]
+	);
+
+	noneOut.onclick = function() {
+
+		for(let i = 0; i < outTabs.length; i++)
+			outTabs[i].childNodes[0].checked = false;
+	};
+
+	ui.extend(ui.root, noneOut);
+
+	let buttons = document.querySelectorAll("button");
+
+	buttons.forEach(
+
+		function(button) {
+			
+			ui.setStyle(
+				button,
+				[
+					["", ""]
+				]
+			);
+		}
+	);
 
 	ui.root = display;
 
@@ -1435,10 +1632,10 @@ else {
 				["background", "white"],
 				["white-space", "pre"],
 				["position", "absolute"],
-				["height", "88vh"],
-				["width", "48vw"],
-				["top", "11vh"],
-				["left", "51vw"]
+				["height", "95vh"],
+				["width", "35vw"],
+				["top", "5vh"],
+				["left", "50vw"]
 			]
 		);
 
@@ -1453,6 +1650,11 @@ else {
 
 	function onRun(type) {
 
+		if(onRun.count == null)
+			onRun.count = 0;
+
+		onRun.count++;
+
 		ui.setStyle(
 			display,
 			[
@@ -1462,33 +1664,74 @@ else {
 
 		display.innerHTML = "";
 
-		ui.extend(
-			display,
-			ui.setStyle(
-				ui.specify(
-					ui.create("iframe"),
-					[
-						[
-							"src",
-							originLink +
-								"&kaeonorigin" +
-								type +
-								"=" +
-								currentTab
-						],
-						["frameborder", "0"]
-					]
-				),
+		let frame = ui.setStyle(
+			ui.specify(
+				ui.create("iframe"),
 				[
-					["width", "100%"],
-					["height", "100%"],
-					["left", "0%"],
-					["top", "0%"],
-					["position", "absolute"],
-					["overflow", "auto"]
+					[
+						"src",
+						originLink +
+							"&kaeonorigin" +
+							type +
+							"=" +
+							currentTab
+					],
+					["frameborder", "0"]
 				]
-			)
+			),
+			[
+				["width", "100%"],
+				["height", "100%"],
+				["left", "0%"],
+				["top", "0%"],
+				["position", "absolute"],
+				["overflow", "auto"]
+			]
 		);
+
+		ui.extend(display, frame);
+
+		var outItem = ui.create("div");
+
+		outItem.frame = frame;
+
+		let check = ui.create("input");
+		check.type = "checkbox";
+
+		let button =
+			ui.fill(
+				ui.create("button"),
+				tabs[currentTab].button.innerHTML + ": " + onRun.count
+			);
+
+		outItem.button = button;
+		
+		button.onclick = function() {
+			
+			display.innerHTML = "";
+
+			ui.extend(
+				display,
+				outItem.frame
+			)
+
+			for(let i = 0; i < outTabs.length; i++)
+				outTabs[i].button.style.background = "white";
+	
+			outItem.button.style.background = "green";
+		};
+
+		ui.extend(outItem, check);
+		ui.extend(outItem, button);
+
+		ui.extend(outs, outItem);
+
+		outTabs.push(outItem);
+
+		for(let i = 0; i < outTabs.length; i++)
+			outTabs[i].button.style.background = "white";
+
+		outItem.button.style.background = "green";
 	}
 
 	function onRunFUSION() {
@@ -1499,7 +1742,7 @@ else {
 		onRun("js");
 	}
 
-	function showONE() {
+	function showONE(preprocess) {
 
 		ui.setStyle(
 			display,
@@ -1533,7 +1776,12 @@ else {
 		ui.extend(display, oneText);
 
 		try {
-			oneText.value = one.writeONE(onePlus.readONEPlus(text.value));
+
+			if(!preprocess)
+				oneText.value = oneSuite.write(oneSuite.parse(text.value));
+
+			else
+				oneText.value = oneSuite.preprocess(text.value);
 		}
 
 		catch(error) {
