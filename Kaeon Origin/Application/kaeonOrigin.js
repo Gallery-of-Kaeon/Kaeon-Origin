@@ -34,7 +34,7 @@ window.location.href.replace(
 
 let tempCache = require.cache;
 
-require = function(path) {
+require = function(path, reload) {
 
 	require.localCache = require.localCache ? require.localCache : [[], []];
 	require.cache = require.cache ? require.cache : [[], []];
@@ -56,7 +56,7 @@ require = function(path) {
 
 			let localIndex = require.localCache[0].indexOf(localLowerPath);
 		
-			if(localIndex == -1) {
+			if(localIndex == -1 || reload) {
 
 				let allText = data[i].content;
 
@@ -333,7 +333,12 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 	if(isJS) {
 
 		try {
-			eval(code);
+
+			eval(
+				"(async () => {\n" +
+				oneSuite.preprocess(code) +
+				"\n})();"
+			);
 		}
 
 		catch(error) {
@@ -1391,66 +1396,6 @@ else {
 
 	ui.extend(document.documentElement, preprocess);
 
-	// ui.extend(
-	// 	ui.root,
-	// 	ui.setStyle(
-	// 		ui.create("div"),
-	// 		[
-	// 			["background", "black"],
-	// 			["position", "absolute"],
-	// 			["height", "1vh"],
-	// 			["width", "50vw"],
-	// 			["top", "5vh"],
-	// 			["left", "50vw"]
-	// 		]
-	// 	)
-	// );
-
-	// ui.extend(
-	// 	ui.root,
-	// 	ui.setStyle(
-	// 		ui.create("div"),
-	// 		[
-	// 			["background", "black"],
-	// 			["position", "absolute"],
-	// 			["height", "1vh"],
-	// 			["width", "50vw"],
-	// 			["top", "99vh"],
-	// 			["left", "50vw"]
-	// 		]
-	// 	)
-	// );
-
-	// ui.extend(
-	// 	ui.root,
-	// 	ui.setStyle(
-	// 		ui.create("div"),
-	// 		[
-	// 			["background", "black"],
-	// 			["position", "absolute"],
-	// 			["height", "95vh"],
-	// 			["width", "1vw"],
-	// 			["top", "5vh"],
-	// 			["left", "50vw"]
-	// 		]
-	// 	)
-	// );
-
-	// ui.extend(
-	// 	ui.root,
-	// 	ui.setStyle(
-	// 		ui.create("div"),
-	// 		[
-	// 			["background", "black"],
-	// 			["position", "absolute"],
-	// 			["height", "95vh"],
-	// 			["width", "1vw"],
-	// 			["top", "5vh"],
-	// 			["left", "99vw"]
-	// 		]
-	// 	)
-	// );
-
 	var fullscreen = ui.fill(ui.create("button"), "Fullscreen");
 
 	ui.setStyle(
@@ -1642,33 +1587,6 @@ else {
 		return value;
 	}
 
-	function clearOutput() {
-
-		require.localCache = [[], []];
-
-		ui.setStyle(
-			display,
-			[
-				["overflow", "auto"],
-				["background", "white"],
-				["white-space", "pre"],
-				["position", "absolute"],
-				["height", "95vh"],
-				["width", "35vw"],
-				["top", "5vh"],
-				["left", "50vw"]
-			]
-		);
-
-		// display.innerHTML = "";
-
-		for(let i = 0; i < intervals.length; i++)
-			clearInterval(intervals[i]);
-
-		for(let i = 0; i < timeouts.length; i++)
-			clearTimeout(timeouts[i]);
-	}
-
 	function onRun(type) {
 
 		if(onRun.count == null)
@@ -1682,8 +1600,6 @@ else {
 				["overflow", "auto"]
 			]
 		);
-
-		// display.innerHTML = "";
 
 		let frame = ui.setStyle(
 			ui.specify(
