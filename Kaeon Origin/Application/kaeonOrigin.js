@@ -1095,7 +1095,14 @@ else {
 
 		var mywindow = window.open('', 'PRINT', 'height=400,width=600');
 
-		mywindow.document.write(text.value);
+		mywindow.document.write(
+			"<pre>" +
+			text.value.
+			split("<").join("&lt;").
+			split(">").join("&gt;").
+			split("&").join("&amp;") +
+			"</pre>"
+		);
 
 		mywindow.document.close();
 		mywindow.focus();
