@@ -10,6 +10,7 @@ var onePlusLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript
 var universalPreprocessorLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/UniversalPreprocessor.js";
 var oneSuiteLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/ONESuite.js";
 var ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/IO/ioBrowser.js";
+var httpLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/HTTP%20Utils/httpUtils.js";
 var uiLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js";
 
 var fusionRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedOP=";
@@ -532,6 +533,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 	stoneLink = null;
 	onePlusLink = null;
 	ioLink = null;
+	httpLink = null;
 	uiLink = null;
 
 	fusionRoot = null;
@@ -947,6 +949,16 @@ else {
 				ioLink +
 				"\" target=\"_blank\">" +
 				ioLink +
+				"</a>"));
+
+		ui.extend(
+			optionsDiv,
+			ui.fill(
+				ui.create("p"),
+				"HTTP Module: <a href=\"" +
+				httpLink +
+				"\" target=\"_blank\">" +
+				httpLink +
 				"</a>"));
 
 		ui.extend(
