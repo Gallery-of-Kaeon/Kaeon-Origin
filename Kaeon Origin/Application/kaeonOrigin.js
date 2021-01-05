@@ -1450,8 +1450,8 @@ else {
 		[
 			["resize", "none"],
 			["position", "absolute"],
-			["height", "84.5vh"],
-			["width", "34.6vw"],
+			["height", "85vh"],
+			["width", "35vw"],
 			["top", "5vh"],
 			["left", "15vw"],
 			["overflow", "auto"]
