@@ -251,8 +251,6 @@ window.location.href.replace(
 	}
 );
 
-let tempCache = require.cache;
-
 require = function(path, reload) {
 
 	require.localCache = require.localCache ? require.localCache : [[], []];
@@ -407,7 +405,6 @@ require = function(path, reload) {
 		return require.cache[1][index].exports;
 }
 
-require.cache = tempCache;
 require.onePlus = onePlus;
 
 if(window.localStorage.getItem("kaeonOriginConsole") == null)
