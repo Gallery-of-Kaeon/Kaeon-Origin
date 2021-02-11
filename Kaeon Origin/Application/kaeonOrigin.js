@@ -342,11 +342,13 @@ require = function(path, reload) {
 
 	if(index == -1) {
 
-		let cors_api_url = 'https://cors-anywhere.herokuapp.com/';
+		let cors_api_url = 'https://stormy-beach-14823.herokuapp.com/';
 
 		let rawFile = new XMLHttpRequest();
 
 		rawFile.open("GET", cors_api_url + path, false);
+	
+		rawFile.setRequestHeader("Origin", "https://www.abc_" + Math.random() + ".com");
 
 		let allText = "";
 
@@ -1028,7 +1030,7 @@ else {
 				if(url == null)
 					return;
 
-				text = io.open("https://cors-anywhere.herokuapp.com/" + url);
+				text = io.open(url);
 			}
 
 			catch(error) {
@@ -1103,7 +1105,7 @@ else {
 				if(url == null)
 					return;
 
-				text = io.open("https://cors-anywhere.herokuapp.com/" + url);
+				text = io.open(url);
 			}
 
 			catch(error) {
