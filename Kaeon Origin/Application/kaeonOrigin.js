@@ -13,8 +13,11 @@ var ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Util
 var httpLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/HTTP%20Utils/httpUtils.js";
 var uiLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js";
 
-var fusionRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedOP=";
-var jsRoot = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedJS=";
+var fusionRoot = "https://gallery-of-kaeon.github.io/?unitedOP=";
+var jsRoot = "https://gallery-of-kaeon.github.io/?unitedJS=";
+var htmlRoot = "https://gallery-of-kaeon.github.io/?unitedOP=";
+
+var cors_api_path = 'https://stormy-beach-14823.herokuapp.com/';
 
 var one = require(oneLink);
 var kaeonFUSION = require(kaeonFUSIONLink);
@@ -22,6 +25,40 @@ var onePlus = require(onePlusLink);
 var oneSuite = require(oneSuiteLink);
 
 var io = require(ioLink);
+
+function makeOnlineRequest(path, cors) {
+
+	try {
+
+		if(cors)
+			path = 'https://stormy-beach-14823.herokuapp.com/' + path;
+		
+		let rawFile = new XMLHttpRequest();
+
+		rawFile.open("GET", path, false);
+
+		rawFile.setRequestHeader("Origin", "https://www.abc_" + Math.random() + ".com");
+
+		let allText = "";
+
+		rawFile.onreadystatechange = function() {
+
+			if(rawFile.readyState === 4) {
+
+				if(rawFile.status === 200 || rawFile.status == 0)
+					allText = rawFile.responseText;
+			}
+		}
+
+		rawFile.send(null);
+
+		return allText;
+	}
+
+	catch(error) {
+		return "";
+	}
+}
 
 var ui = {
 
@@ -342,11 +379,9 @@ require = function(path, reload) {
 
 	if(index == -1) {
 
-		let cors_api_url = 'https://stormy-beach-14823.herokuapp.com/';
-
 		let rawFile = new XMLHttpRequest();
 
-		rawFile.open("GET", cors_api_url + path, false);
+		rawFile.open("GET", 'https://stormy-beach-14823.herokuapp.com/' + path, false);
 	
 		rawFile.setRequestHeader("Origin", "https://www.abc_" + Math.random() + ".com");
 
@@ -408,6 +443,7 @@ require = function(path, reload) {
 }
 
 require.onePlus = onePlus;
+require.cors = cors_api_path;
 
 if(window.localStorage.getItem("kaeonOriginConsole") == null)
 	window.localStorage.setItem("kaeonOriginConsole", "true");
@@ -417,33 +453,32 @@ var openFullscreen = function(element) {
 	if(element.requestFullscreen)
 		element.requestFullscreen();
 	
-	else if(element.mozRequestFullScreen) /* Firefox */
+	else if(element.mozRequestFullScreen)
 		element.mozRequestFullScreen();
 	
-	else if(element.webkitRequestFullscreen) /* Chrome, Safari and Opera */
+	else if(element.webkitRequestFullscreen)
 		element.webkitRequestFullscreen();
 	
-	else if(element.msRequestFullscreen) /* IE/Edge */
+	else if(element.msRequestFullscreen)
 		element.msRequestFullscreen();
 }
 
-/* Close fullscreen */
 var closeFullscreen = function() {
 
 	if(document.exitFullscreen)
 		document.exitFullscreen();
 	
-	else if(document.mozCancelFullScreen) /* Firefox */
+	else if(document.mozCancelFullScreen)
 		document.mozCancelFullScreen();
 	
-	else if(document.webkitExitFullscreen) /* Chrome, Safari and Opera */
+	else if(document.webkitExitFullscreen)
 		document.webkitExitFullscreen();
 	
-	else if(document.msExitFullscreen) /* IE/Edge */
+	else if(document.msExitFullscreen)
 		document.msExitFullscreen();
 }
 
-if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
+if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs.kaeonoriginhtml != null) {
 
 	ui.setStyle(
 		document.documentElement,
@@ -461,7 +496,9 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 	let id =
 		urlArgs.kaeonoriginjs != null ?
 			Number(urlArgs.kaeonoriginjs) :
-			Number(urlArgs.kaeonoriginfusion);
+			(urlArgs.kaeonoriginfusion != null ?
+				Number(urlArgs.kaeonoriginfusion) :
+				Number(urlArgs.kaeonoriginhtml));
 	
 	let data = window.localStorage.getItem("kaeonOriginData");
 
@@ -474,6 +511,16 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 	}
 
 	let isJS = urlArgs.kaeonoriginjs != null;
+	let isFUSION = urlArgs.kaeonoriginfusion != null;
+	let isHTML = urlArgs.kaeonoriginhtml != null;
+
+	if(isHTML) {
+
+		document.documentElement.innerHTML = code;
+	
+		if(document.body != null)
+			document.body.style.position = "absolute";
+	}
 
 	var outputField = ui.setStyle(
 		ui.create("textarea"),
@@ -484,6 +531,8 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 			["top", "70%"],
 			["width", "100%"],
 			["height", "30%"],
+			["resize", "none"],
+			["z-index", "2147483647"],
 			["background", "white"],
 			["border-top", "solid black"]
 		]
@@ -502,9 +551,9 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 		100
 	);
 
-	ui.extend(ui.root, outputField);
+	ui.extend(document.documentElement, outputField);
 
-	if(isJS) {
+	if(isJS || isHTML) {
 
 		console.log = function() {
 
@@ -537,11 +586,12 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
 	fusionRoot = null;
 	jsRoot = null;
+	htmlRoot = null;
 
 	io = null;
 	ui = null;
 
-	if(isJS) {
+	if(isJS || isHTML) {
 		one = null;
 		kaeonFUSION = null;
 		onePlus = null;
@@ -565,7 +615,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 		}
 	}
 
-	else {
+	else if(isFUSION) {
 
 		try {
 			oneSuite.process(code);
@@ -573,6 +623,19 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null) {
 
 		catch(error) {
 			console.log(error.stack);
+		}
+	}
+
+	else {
+	
+		let scripts = document.querySelectorAll("script");
+	
+		for(let i = 0; i < scripts.length; i++) {
+	
+			if(scripts[i].getAttribute("src") != null)
+				(1, eval)(makeOnlineRequest(scripts[i].getAttribute("src")));
+	
+			(1, eval)(scripts[i].text);
 		}
 	}
 }
@@ -990,6 +1053,16 @@ else {
 				jsRoot +
 				"\" target=\"_blank\">" +
 				jsRoot +
+				"</a>"));
+
+		ui.extend(
+			optionsDiv,
+			ui.fill(
+				ui.create("p"),
+				"HTML GhostHost Root: <a href=\"" +
+				htmlRoot +
+				"\" target=\"_blank\">" +
+				htmlRoot +
 				"</a>"));
 
 		ui.extend(display, optionsDiv);
@@ -1547,7 +1620,7 @@ else {
 		run,
 		[
 			["position", "absolute"],
-			["height", "5vh"],
+			["height", (10 / 3) + "vh"],
 			["width", "17.5vw"],
 			["top", "90vh"],
 			["left", "15vw"]
@@ -1586,9 +1659,9 @@ else {
 		runJS,
 		[
 			["position", "absolute"],
-			["height", "5vh"],
+			["height", (10 / 3) + "vh"],
 			["width", "17.5vw"],
-			["top", "95vh"],
+			["top", (90 + (10 / 3)) + "vh"],
 			["left", "15vw"]
 		]
 	);
@@ -1597,6 +1670,24 @@ else {
 	runJS.onclick = onRunJS;
 
 	ui.extend(document.documentElement, runJS);
+
+	var runHTML = ui.create("button");
+
+	ui.setStyle(
+		runHTML,
+		[
+			["position", "absolute"],
+			["height", (10 / 3) + "vh"],
+			["width", "17.5vw"],
+			["top", (90 + (2 * (10 / 3))) + "vh"],
+			["left", "15vw"]
+		]
+	);
+
+	runHTML.innerHTML = "Render HTML";
+	runHTML.onclick = onRunHTML;
+
+	ui.extend(document.documentElement, runHTML);
 
 	var out =
 		ui.specify(
@@ -1944,6 +2035,10 @@ else {
 
 	function onRunJS() {
 		onRun("js");
+	}
+
+	function onRunHTML() {
+		onRun("html");
 	}
 
 	oneText = ui.setStyle(
