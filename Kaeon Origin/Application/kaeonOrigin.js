@@ -290,6 +290,9 @@ window.location.href.replace(
 
 require = function(path, reload) {
 
+	if(path.split("-").join("").split(" ").join("").toLowerCase() == "kaeonunited")
+		path = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-United/master/Kaeon%20United/Source/KaeonUnited.js";
+
 	require.localCache = require.localCache ? require.localCache : [[], []];
 	require.cache = require.cache ? require.cache : [[], []];
 
