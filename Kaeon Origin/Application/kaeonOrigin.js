@@ -1,4 +1,4 @@
-var originLink = "https://gallery-of-kaeon.github.io/?path=https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/United%20Bootstrap/index.html&unitedJS=https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-Origin/master/Kaeon%20Origin/Application/kaeonOrigin.js"
+var originLink = "https://gallery-of-kaeon.github.io/?unitedJS=https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-Origin/master/Kaeon%20Origin/Application/kaeonOrigin.js"
 
 var standardLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Modules/Interfaces/Standard.js";
 
@@ -9,6 +9,7 @@ var stoneLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Philosophers
 var onePlusLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONEPlus.js";
 var universalPreprocessorLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/UniversalPreprocessor.js";
 var oneSuiteLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONESuite.js";
+var overrideLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Override/override.js";
 var ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/IO/io.js";
 var httpLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/HTTP%20Utils/httpUtils.js";
 var uiLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/UI/UI.js";
@@ -17,48 +18,12 @@ var fusionRoot = "https://gallery-of-kaeon.github.io/?unitedOP=";
 var jsRoot = "https://gallery-of-kaeon.github.io/?unitedJS=";
 var htmlRoot = "https://gallery-of-kaeon.github.io/?unitedOP=";
 
-var cors_api_path = 'https://stormy-beach-14823.herokuapp.com/';
-
 var one = require(oneLink);
-var kaeonFUSION = require(kaeonFUSIONLink);
 var onePlus = require(onePlusLink);
 var oneSuite = require(oneSuiteLink);
+var override = require(overrideLink);
 
 var io = require(ioLink);
-
-function makeOnlineRequest(path, cors) {
-
-	try {
-
-		if(cors)
-			path = 'https://stormy-beach-14823.herokuapp.com/' + path;
-		
-		let rawFile = new XMLHttpRequest();
-
-		rawFile.open("GET", path, false);
-
-		rawFile.setRequestHeader("Origin", "https://www.abc_" + Math.random() + ".com");
-
-		let allText = "";
-
-		rawFile.onreadystatechange = function() {
-
-			if(rawFile.readyState === 4) {
-
-				if(rawFile.status === 200 || rawFile.status == 0)
-					allText = rawFile.responseText;
-			}
-		}
-
-		rawFile.send(null);
-
-		return allText;
-	}
-
-	catch(error) {
-		return "";
-	}
-}
 
 var ui = {
 
@@ -288,163 +253,6 @@ window.location.href.replace(
 	}
 );
 
-require = function(path, reload) {
-
-	require.localCache = require.localCache ? require.localCache : [[], []];
-	require.cache = require.cache ? require.cache : [[], []];
-
-	let localLowerPath = path.toLowerCase();
-	
-	let data = require.onePlus.readONEPlus(
-		window.localStorage.getItem("kaeonOriginData")
-	).children;
-
-	for(let i = 0; i < data.length; i++) {
-
-		let file = "file " + (i + 1);
-
-		if(data[i].children.length != 0)
-			file = data[i].children[0].content;
-
-		if(file.toLowerCase() == localLowerPath) {
-
-			let localIndex = require.localCache[0].indexOf(localLowerPath);
-		
-			if(localIndex == -1 || reload) {
-
-				let allText = data[i].content;
-
-				let newModule = {
-					id: path,
-					exports: { },
-					parent: module,
-					filename: path,
-					loaded: false,
-					children: [],
-					paths: []
-				};
-		
-				require.localCache[0].push(localLowerPath);
-				require.localCache[1].push(newModule);
-		
-				let newModuleContents = (
-					new Function(
-						"var module = arguments[0];" +
-						"var require = " +
-						require.toString() +
-						";require.cache = arguments[1];" +
-						"require.localCache = arguments[2];" +
-						"require.onePlus = arguments[3];" +
-						allText +
-						";return module;"
-					)
-				)(
-					newModule,
-					require.cache,
-					require.localCache,
-					require.onePlus
-				);
-		
-				for(key in newModuleContents)
-					newModule.exports[key] = newModuleContents.exports[key];
-		
-				module.children.push(newModule);
-				newModule.loaded = true;
-		
-				return newModule.exports;
-			}
-
-			else {
-				return require.localCache[1][localIndex];
-			}
-		}
-	}
-
-	if(module.parent != null) {
-
-		if(path.startsWith(".")) {
-
-			path =
-				module.filename.substring(0, module.filename.lastIndexOf('/') + 1) +
-				path;
-		}
-	}
-
-	let lowerPath = path.toLowerCase();
-
-	while(lowerPath.startsWith("././"))
-		lowerPath = lowerPath.substring(2);
-
-	let index = require.cache[0].indexOf(lowerPath);
-
-	if(index == -1) {
-
-		let rawFile = new XMLHttpRequest();
-
-		rawFile.open("GET", 'https://stormy-beach-14823.herokuapp.com/' + path, false);
-	
-		rawFile.setRequestHeader("Origin", "https://www.abc_" + Math.random() + ".com");
-
-		let allText = "";
-
-		rawFile.onreadystatechange = function() {
-
-			if(rawFile.readyState === 4) {
-
-				if(rawFile.status === 200 || rawFile.status == 0)
-					allText = rawFile.responseText;
-			}
-		}
-
-		rawFile.send(null);
-
-		let newModule = {
-			id: path,
-			exports: { },
-			parent: module,
-			filename: path,
-			loaded: false,
-			children: [],
-			paths: []
-		};
-
-		require.cache[0].push(lowerPath);
-		require.cache[1].push(newModule);
-		
-		let newModuleContents = (
-			new Function(
-				"var module = arguments[0];" +
-				"var require = " +
-				require.toString() +
-				";require.cache = arguments[1];" +
-				"require.localCache = arguments[2];" +
-				"require.onePlus = arguments[3];" +
-				allText +
-				";return module;"
-			)
-		)(
-			newModule,
-			require.cache,
-			require.localCache,
-			require.onePlus
-		);
-
-		for(key in newModuleContents)
-			newModule.exports[key] = newModuleContents.exports[key];
-
-		module.children.push(newModule);
-		newModule.loaded = true;
-
-		return newModule.exports;
-	}
-
-	else
-		return require.cache[1][index].exports;
-}
-
-require.onePlus = onePlus;
-require.cors = cors_api_path;
-
 if(window.localStorage.getItem("kaeonOriginConsole") == null)
 	window.localStorage.setItem("kaeonOriginConsole", "true");
 
@@ -513,6 +321,29 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 	let isJS = urlArgs.kaeonoriginjs != null;
 	let isFUSION = urlArgs.kaeonoriginfusion != null;
 	let isHTML = urlArgs.kaeonoriginhtml != null;
+
+	override.onSend((request) => {
+
+		if(request.request.uri.startsWith("http") && request.request.uri.includes("://"))
+			return null;
+		
+		let data = onePlus.readONEPlus(
+			window.localStorage.getItem("kaeonOriginData")
+		).children;
+
+		for(let i = 0; i < data.length; i++) {
+
+			let file = "file " + (i + 1);
+
+			if(data[i].children.length != 0)
+				file = data[i].children[0].content;
+
+			if(file.toLowerCase() == request.request.uri.toLowerCase())
+				return data[i].content;
+		}
+
+		return "";
+	});
 
 	if(isHTML) {
 
@@ -591,11 +422,8 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 	io = null;
 	ui = null;
 
-	if(isJS || isHTML) {
+	if(isJS || isHTML)
 		one = null;
-		kaeonFUSION = null;
-		onePlus = null;
-	}
 
 	urlArgs = null;
 
