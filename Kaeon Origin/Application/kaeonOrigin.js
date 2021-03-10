@@ -1,17 +1,16 @@
-var originLink = "https://gallery-of-kaeon.github.io/?unitedJS=https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-Origin/master/Kaeon%20Origin/Application/kaeonOrigin.js"
+var moduleDependencies = {
+	ioLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Data/io.js",
+	oneLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONE.js",
+	onePlusLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONEPlus.js",
+	overrideLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Application/Management/override.js",
+	oneSuiteLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONESuite.js"
+};
 
-var oneLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONE.js";
-var onePlusLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONEPlus.js";
-var oneSuiteLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONESuite.js";
-var overrideLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Application/Management/override.js";
-var ioLink = "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Data/io.js";
-
-var one = require(oneLink);
-var onePlus = require(onePlusLink);
-var oneSuite = require(oneSuiteLink);
-var override = require(overrideLink);
-
-var io = require(ioLink);
+var io = require(moduleDependencies.ioLink);
+var one = require(moduleDependencies.oneLink);
+var onePlus = require(moduleDependencies.onePlusLink);
+var override = require(moduleDependencies.overrideLink);
+var oneSuite = require(moduleDependencies.oneSuiteLink);
 
 var ui = {
 
@@ -392,27 +391,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 		}
 	}
 
-	standardLink = null;
-
-	oneLink = null;
-	fusionLink = null;
-	kaeonFUSIONLink = null;
-	stoneLink = null;
-	onePlusLink = null;
-	ioLink = null;
-	httpLink = null;
-	uiLink = null;
-
-	fusionRoot = null;
-	jsRoot = null;
-	htmlRoot = null;
-
-	io = null;
-	ui = null;
-
-	if(isJS || isHTML)
-		one = null;
-
+	moduleDependencies = null;
 	urlArgs = null;
 
 	if(isJS) {
@@ -1552,7 +1531,7 @@ else {
 				[
 					[
 						"src",
-						originLink +
+						window.location.href +
 							"&kaeonorigin" +
 							type +
 							"=" +
