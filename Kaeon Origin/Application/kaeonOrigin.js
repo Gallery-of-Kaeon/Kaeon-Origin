@@ -1,4 +1,5 @@
 var moduleDependencies = {
+	cors: "https://stormy-beach-14823.herokuapp.com/",
 	ioLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Data/io.js",
 	oneLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONE.js",
 	onePlusLink: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONEPlus.js",
@@ -311,7 +312,12 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 
 	override.onSend((request) => {
 
-		if(request.request.uri.startsWith("http") && request.request.uri.includes("://"))
+		let uri = request.request.uri;
+
+		if(uri.includes(moduleDependencies.cors))
+			uri = uri.substring(moduleDependencies.cors.length);
+
+		if(uri.startsWith("http") && uri.includes("://"))
 			return null;
 		
 		let data = onePlus.readONEPlus(
@@ -325,7 +331,7 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 			if(data[i].children.length != 0)
 				file = data[i].children[0].content;
 
-			if(file.toLowerCase() == request.request.uri.toLowerCase())
+			if(file.toLowerCase() == uri.toLowerCase())
 				return data[i].content;
 		}
 
@@ -391,7 +397,6 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 		}
 	}
 
-	moduleDependencies = null;
 	urlArgs = null;
 
 	if(isJS) {
