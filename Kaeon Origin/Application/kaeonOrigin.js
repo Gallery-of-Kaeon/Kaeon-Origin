@@ -385,6 +385,8 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 				outputField.value += "" + arguments[i] + " ";
 
 			outputField.value += "\n";
+			
+			outputField.scrollTop = outputField.scrollHeight;
 		}
 	}
 
@@ -394,6 +396,8 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 
 			for(let i = 0; i < arguments.length; i++)
 				outputField.value += "" + arguments[i];
+			
+			outputField.scrollTop = outputField.scrollHeight;
 		}
 	}
 
