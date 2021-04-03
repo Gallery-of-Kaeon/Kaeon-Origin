@@ -14,10 +14,12 @@ var one = require(moduleDependencies.one);
 var onePlus = require(moduleDependencies.onePlus);
 var override = require(moduleDependencies.override);
 var oneSuite = require(moduleDependencies.oneSuite);
-var ui = require(moduleDependencies.ui)
-var widgets = require(moduleDependencies.widgets)
+var ui = require(moduleDependencies.ui);
+var widgets = require(moduleDependencies.widgets);
 
-var urlArgs = {};
+ui.load("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");
+
+let urlArgs = {};
 
 window.location.href.replace(
 	/[?&]+([^=&]+)=([^&]*)/gi,
@@ -28,21 +30,6 @@ window.location.href.replace(
 
 if(window.localStorage.getItem("kaeonOriginConsole") == null)
 	window.localStorage.setItem("kaeonOriginConsole", "true");
-
-var openFullscreen = function(element) {
-
-	if(element.requestFullscreen)
-		element.requestFullscreen();
-	
-	else if(element.mozRequestFullScreen)
-		element.mozRequestFullScreen();
-	
-	else if(element.webkitRequestFullscreen)
-		element.webkitRequestFullscreen();
-	
-	else if(element.msRequestFullscreen)
-		element.msRequestFullscreen();
-}
 
 if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs.kaeonoriginhtml != null) {
 
@@ -131,10 +118,11 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 			"z-index": "2147483647",
 			background: "white",
 			"border-top": "solid black"
+		},
+		fields: {
+			readOnly: true
 		}
 	});
-
-	outputField.readOnly = true;
 
 	setInterval(
 		function() {
@@ -197,165 +185,694 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 			(1, eval)(scripts[i].text);
 		}
 	}
+
+	return;
 }
 
-else {
+var currentTab = 0;
 
-	document.title = "Kaeon Origin";
+var oneText = ui.create({
+	tag: "textarea",
+	attributes: { spellcheck: "false" },
+	style: {
+		resize: "none",
+		overflow: "auto",
+		left: "0vw",
+		top: "0vh",
+		width: "100%",
+		height: "100%",
+		"white-space": "pre"
+	},
+	fields: { readOnly: true }
+});
 
-	ui.set(
-		document.documentElement,
-		{
-			style: {
-				margin: "0",
-				height: "100%",
-				overflow: "hidden"
+var outTabs = [];
+
+var tabs = [];
+
+function addTab(tab) {
+
+	if(tab == null)
+		tab = createTab();
+
+	tab.line = ui.create({ tag: "br" });
+
+	tabs.push(tab);
+
+	ui.extend(ui.get("#files")[0], [tab, tab.line]);
+
+	saveData();
+}
+
+function createTab(data, index, name) {
+
+	if(index == null)
+		index = tabs.length;
+
+	let check = ui.create({ tag: "input", fields: { type: "checkbox" } });
+
+	let button = ui.create({
+		tag: "button",
+		content: name == null ? ("File " + (index + 1)) : name,
+		fields: {
+			index: index,
+			onclick: () => {
+				setTab(button.index);
 			}
 		}
-	);
+	});
 
-	var tabs = [];
-	var currentTab = 0;
+	let nameButton = ui.create({
+		tag: "button",
+		content: "Set Name",
+		fields: {
+			index: index,
+			onclick: () => {
 
-	var outTabs = [];
+				let newName = prompt("Enter this file's name:");
+	
+				if(newName == null)
+					return;
+	
+				tabs[nameButton.index].childNodes[1].innerHTML = newName;
+				tabs[nameButton.index].named = true;
 
-	function createTab(data, index, name) {
+				saveData();
+			}
+		}
+	});
 
-		if(index == null)
-			index = tabs.length;
+	let tab =  ui.create({ fields: { named: name != null, button: button, data: data != null ? data : "" } });
 
-		let tab =  ui.create();
-		tab.named = name != null;
+	ui.extend(tab, [check, button, nameButton]);
 
-		let check = ui.create({ tag: "input" });
-		check.type = "checkbox";
+	return tab;
+}
 
-		let button = ui.create({
-			tag: "button",
-			content: name == null ? ("File " + (index + 1)) : name
-		});
+function load() {
 
-		button.index = index;
-		
-		button.onclick = function() {
-			setTab(button.index);
-		};
+	tabs = [];
 
-		let nameButton = ui.create({ tag: "button", content: "Set Name" });
-		nameButton.index = index;
-		
-		nameButton.onclick = function() {
+	ui.get("#files")[0].innerHTML = "";
 
-			let newName = prompt("Enter this file's name:");
+	let data = window.localStorage.getItem("kaeonOriginData");
 
-			if(newName == null)
-				return;
-
-			tabs[nameButton.index].childNodes[1].innerHTML = newName;
-			tabs[nameButton.index].named = true;
-		};
-
-		ui.extend(tab, check);
-		ui.extend(tab, button);
-		ui.extend(tab, nameButton);
-
-		tab.button = button;
-
-		tab.data = data != null ? data : "";
-
-		return tab;
+	try {
+		data = onePlus.readONEPlus(data);
 	}
 
-	function addTab(tab) {
-
-		if(tab == null)
-			tab = createTab();
-
-		tab.line = ui.create({ tag: "br" });
-
-		tabs.push(tab);
-
-		ui.extend(files, tab);
-		ui.extend(files, tab.line);
+	catch(error) {
+		data = one.createElement("");
 	}
 
-	function load() {
+	if(data.children.length == 0)
+		one.addChild(data, one.createElement(""));
 
-		tabs = [];
-		files.innerHTML = "";
+	for(let i = 0; i < data.children.length; i++) {
 
-		let data = window.localStorage.getItem("kaeonOriginData");
+		let name = null;
+
+		if(data.children[i].children.length > 0)
+			name = data.children[i].children[0].content;
+
+		addTab(createTab(data.children[i].content, i, name));
+	}
+
+	ui.get("#text")[0].value = data.children[0].content;
+
+	setTab(0);
+}
+
+function onRun(type) {
+
+	if(onRun.count == null)
+		onRun.count = 0;
+
+	onRun.count++;
+
+	ui.set(ui.get("#display")[0], { style: { overflow: "auto" } });
+
+	let frame = ui.create({
+		tag: "iframe",
+		attributes: {
+			"src": window.location.href +
+				"&kaeonorigin" +
+				type +
+				"=" +
+				currentTab,
+			"frameborder": "0"
+		},
+		style: {
+			width: "100%",
+			height: "100%",
+			left: "0%",
+			top: "0%",
+			position: "absolute",
+			overflow: "auto"
+		}
+	});
+
+	try {
+		ui.get("#display")[0].removeChild(oneText);
+	}
+
+	catch(error) {
+
+	}
+
+	ui.extend(ui.get("#display")[0], frame);
+
+	var outItem = ui.create();
+
+	outItem.frame = frame;
+
+	let check = ui.create({ tag: "input" });
+	check.type = "checkbox";
+
+	let button = ui.create({
+		tag: "button",
+		content: tabs[currentTab].button.innerHTML + ": " + onRun.count
+	});
+
+	outItem.button = button;
+	
+	button.onclick = function() {
 
 		try {
-			data = onePlus.readONEPlus(data);
+			ui.get("#display")[0].removeChild(oneText);
 		}
 
 		catch(error) {
-			data = one.createElement("");
+
 		}
 
-		if(data.children.length == 0)
-			one.addChild(data, one.createElement(""));
-
-		for(let i = 0; i < data.children.length; i++) {
-
-			let name = null;
-
-			if(data.children[i].children.length > 0)
-				name = data.children[i].children[0].content;
-
-			addTab(createTab(data.children[i].content, i, name));
+		for(let i = 0; i < outTabs.length; i++) {
+			outTabs[i].button.style.background = "white";
+			outTabs[i].frame.style.display = "none";
 		}
 
-		text.value = data.children[0].content;
+		outItem.button.style.background = "green";
+		outItem.frame.style.display = "block";
+	};
 
-		setTab(0);
+	ui.extend(outItem, check);
+	ui.extend(outItem, button);
+
+	ui.extend(ui.get("#output-tabs")[0], outItem);
+
+	outTabs.push(outItem);
+
+	for(let i = 0; i < outTabs.length; i++) {
+		outTabs[i].button.style.background = "white";
+		outTabs[i].frame.style.display = "none";
 	}
 
-	function saveData() {
+	outItem.button.style.background = "green";
+	outItem.frame.style.display = "block";
+}
 
-		try {
+function openFullscreen(element) {
 
-			let data = new one.Element();
-			
-			tabs[currentTab].data = text.value;
+	if(element.requestFullscreen)
+		element.requestFullscreen();
+	
+	else if(element.mozRequestFullScreen)
+		element.mozRequestFullScreen();
+	
+	else if(element.webkitRequestFullscreen)
+		element.webkitRequestFullscreen();
+	
+	else if(element.msRequestFullscreen)
+		element.msRequestFullscreen();
+}
 
-			for(let i = 0; i < tabs.length; i++) {
+function saveData() {
 
-				let item = one.createElement(tabs[i].data);
+	try {
 
-				one.addChild(data, item);
-
-				if(tabs[i].named) {
-
-					one.addChild(
-						item, one.createElement(tabs[i].childNodes[1].innerHTML));
-				}
-			}
-			
-			window.localStorage.setItem("kaeonOriginData", one.writeONE(data));
-		}
-
-		catch(error) {
-
-		}
-	}
-
-	function setTab(index) {
-
-		saveData();
+		let data = new one.Element();
+		
+		tabs[currentTab].data = text.value;
 
 		for(let i = 0; i < tabs.length; i++) {
 
-			tabs[i].childNodes[1].style.background =
-				i == index ? "green" : "white";
-		}
+			let item = one.createElement(tabs[i].data);
 
-		currentTab = index;
-		text.value = tabs[index].data;
-	}
+			one.addChild(data, item);
+
+			if(tabs[i].named) {
+
+				one.addChild(
+					item, one.createElement(tabs[i].childNodes[1].innerHTML));
+			}
+		}
 		
-	var toggle = ui.create({
+		window.localStorage.setItem("kaeonOriginData", one.writeONE(data));
+	}
+
+	catch(error) {
+
+	}
+}
+
+function setTab(index) {
+
+	saveData();
+
+	for(let i = 0; i < tabs.length; i++) {
+
+		tabs[i].childNodes[1].style.background =
+			i == index ? "green" : "white";
+	}
+
+	currentTab = index;
+	ui.get("#text")[0].value = tabs[index].data;
+}
+
+function showONE(preprocess) {
+
+	ui.set(ui.get("#display")[0], { style: { overflow: "hidden" } });
+
+	
+
+	for(let i = 0; i < outTabs.length; i++)
+		outTabs[i].frame.style.display = "none";
+
+	ui.extend(ui.get("#display")[0], oneText);
+
+	try {
+
+		if(!preprocess)
+			oneText.value = oneSuite.write(oneSuite.parse(ui.get("#text")[0].value));
+
+		else
+			oneText.value = oneSuite.preprocess(ui.get("#text")[0].value);
+	}
+
+	catch(error) {
+		oneText.value = "ERROR: INVALID ONE+";
+	}
+}
+
+document.title = "Kaeon Origin";
+
+ui.set(
+	document.documentElement,
+	{
+		style: {
+			margin: "0",
+			height: "100%",
+			overflow: "hidden"
+		}
+	}
+);
+
+ui.extend([
+	{
+		tag: "button",
+		content: "Open All",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "0vh",
+			left: "0vw"
+		},
+		fields: {
+			onclick: () => {
+		
+				if(!confirm(
+					"This will delete the contents of the existing workspace." +
+					"\nAre you okay with this?")) {
+		
+					return;
+				}
+		
+				if(confirm("Is the file you want to upload online?")) {
+		
+					let text = null;
+		
+					try {
+		
+						let url = prompt("Enter the URL:");
+		
+						if(url == null)
+							return;
+		
+						text = io.open(url);
+					}
+		
+					catch(error) {
+						return;
+					}
+		
+					window.localStorage.setItem("kaeonOriginData", text);
+		
+					load();
+				}
+				
+				else {
+		
+					io.open(
+						function(text) {
+		
+							window.localStorage.setItem("kaeonOriginData", text);
+		
+							load();
+						}
+					);
+				}
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Save All",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "0vh",
+			left: "7.5vw"
+		},
+		fields: {
+			onclick: () => {
+
+				io.save(
+					window.localStorage.getItem("kaeonOriginData"),
+					"Kaeon Origin Workspace.op"
+				);
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Open",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "5vh",
+			left: "0vw"
+		},
+		fields: {
+			onclick: () => {
+
+				if(confirm("Is the file you want to upload online?")) {
+		
+					let text = null;
+		
+					try {
+		
+						let url = prompt("Enter the URL:");
+		
+						if(url == null)
+							return;
+		
+						text = io.open(url);
+					}
+		
+					catch(error) {
+						return;
+					}
+		
+					addTab(createTab(text));
+					setTab(currentTab);
+		
+					saveData();
+				}
+		
+				else {
+		
+					io.open(
+						function(text) {
+		
+							addTab(createTab(text));
+							setTab(currentTab);
+		
+							saveData();
+						}
+					);
+				}
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "New",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "5vh",
+			left: "7.5vw"
+		},
+		fields: {
+			onclick: () => {
+
+				addTab();
+				setTab(currentTab);
+		
+				saveData();
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Remove",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "15vw",
+			top: "90vh",
+			left: "0vw"
+		},
+		fields: {
+			onclick: () => {
+
+				let temp = tabs[currentTab];
+				let current = false;
+		
+				for(let i = 0; i < tabs.length && !current; i++) {
+		
+					if(tabs[i].childNodes[0].checked && i == currentTab)
+						current = true;
+				}
+		
+				currentTab = -1;
+		
+				for(let i = 0; i < tabs.length; i++) {
+		
+					if(tabs[i].childNodes[0].checked) {
+		
+						ui.get("#files")[0].removeChild(tabs[i]);
+						ui.get("#files")[0].removeChild(tabs[i].line);
+		
+						tabs.splice(i, 1);
+		
+						i--;
+					}
+				}
+		
+				for(let i = 0; i < tabs.length; i++) {
+		
+					let button = tabs[i].childNodes[1];
+		
+					if(!tabs[i].named)
+						ui.set(button, { content: "File " + (i + 1) });
+		
+					button.index = i;
+		
+					if(tabs[i] === temp)
+						setTab(i);
+				}
+		
+				if(tabs.length == 0)
+					addTab();
+		
+				if(current)
+					setTab(0);
+		
+				saveData();
+			}
+		}
+	},
+	{
+		attributes: { id: "files" },
+		style: {
+			position: "absolute",
+			height: "80vh",
+			width: "15vw",
+			top: "10vh",
+			left: "0vw",
+			overflow: "auto",
+			"white-space": "pre"
+		}
+	},
+	{
+		tag: "button",
+		content: "All",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "95vh",
+			left: "0vw"
+		},
+		fields: {
+			onclick: () => {
+
+				for(let i = 0; i < tabs.length; i++)
+					tabs[i].childNodes[0].checked = true;
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "None",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "7.5vw",
+			top: "95vh",
+			left: "7.5vw"
+		},
+		fields: {
+			onclick: () => {
+
+				for(let i = 0; i < tabs.length; i++)
+					tabs[i].childNodes[0].checked = false;
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Save",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "17.5vw",
+			top: "0vh",
+			left: "15vw"
+		},
+		fields: {
+			onclick: () => {
+
+				io.save(
+					ui.get("#text")[0].value,
+					tabs[currentTab].named ?
+						tabs[currentTab].childNodes[1].innerHTML :
+						"File " + (currentTab + 1) + ".txt"
+				);
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Print",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "17.5vw",
+			top: "0vh",
+			left: "32.5vw"
+		},
+		fields: {
+			onclick: () => {
+
+				var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+		
+				mywindow.document.write(
+					"<pre>" +
+					ui.get("#text")[0].value.
+					split("<").join("&lt;").
+					split(">").join("&gt;").
+					split("&").join("&amp;") +
+					"</pre>"
+				);
+		
+				mywindow.document.close();
+
+				mywindow.focus();
+		
+				mywindow.print();
+				mywindow.close();
+			}
+		}
+	},
+	{
+		tag: "button",
+		content: "Run Kaeon FUSION",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: (35 / 3) + "vw",
+			top: "90vh",
+			left: "15vw"
+		},
+		fields: { onclick: () => { onRun("fusion"); } }
+	},
+	{
+		tag: "button",
+		content: "Run JavaScript",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: (35 / 3) + "vw",
+			top: "90vh",
+			left: (15 + (35 / 3)) + "vw"
+		},
+		fields: { onclick: () => { onRun("js"); } }
+	},
+	{
+		tag: "button",
+		content: "Run HTML",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: (35 / 3) + "vw",
+			top: "90vh",
+			left: (15 + (2 * (35 / 3))) + "vw"
+		},
+		fields: { onclick: () => { onRun("html"); } }
+	},
+	{
+		tag: "button",
+		content: "Show ONE",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "17.5vw",
+			top: "95vh",
+			left: "15vw"
+		},
+		fields: { onclick: () => { showONE(false); } }
+	},
+	{
+		tag: "button",
+		content: "Preprocess",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "17.5vw",
+			top: "95vh",
+			left: "32.5vw"
+		},
+		fields: { onclick: () => { showONE(true); } }
+	},
+	{
+		tag: "button",
+		content: "Fullscreen",
+		style: {
+			position: "absolute",
+			height: "5vh",
+			width: "17.5vw",
+			top: "0vh",
+			left: "50vw"
+		},
+		fields: { onclick: () => { openFullscreen(ui.get("#display")[0]); } }
+	},	
+	{
 		tag: "button",
 		content: window.localStorage.getItem("kaeonOriginConsole") == "true" ?
 			"Hide Console" :
@@ -366,482 +883,28 @@ else {
 			width: "17.5vw",
 			top: "0vh",
 			left: "67.5vw"
-		}
-	});
+		},
+		fields: {
+			onclick: (event) => {
 
-	toggle.onclick = function() {
-
-		if(window.localStorage.getItem("kaeonOriginConsole") == "true") {
-
-			window.localStorage.setItem("kaeonOriginConsole", "false");
-
-			toggle.innerHTML = "Show Console";
-		}
-
-		else {
-
-			window.localStorage.setItem("kaeonOriginConsole", "true");
-
-			toggle.innerHTML = "Hide Console";
-		}
-	}
-
-	ui.extend(toggle);
-
-	var openAll = ui.create({
-		tag: "button",
-		content: "Open All",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "0vh",
-			left: "0vw"
-		}
-	});
-
-	openAll.onclick = function() {
+				if(window.localStorage.getItem("kaeonOriginConsole") == "true") {
 		
-		if(!confirm(
-			"This will delete the contents of the existing workspace." +
-			"\nAre you okay with this?")) {
-
-			return;
-		}
-
-		if(confirm("Is the file you want to upload online?")) {
-
-			let text = null;
-
-			try {
-
-				let url = prompt("Enter the URL:");
-
-				if(url == null)
-					return;
-
-				text = io.open(url);
-			}
-
-			catch(error) {
-				return;
-			}
-
-			window.localStorage.setItem("kaeonOriginData", text);
-
-			load();
-		}
+					window.localStorage.setItem("kaeonOriginConsole", "false");
 		
-		else {
-
-			io.open(
-				function(text) {
-
-					window.localStorage.setItem("kaeonOriginData", text);
-
-					load();
+					event.target.innerHTML = "Show Console";
 				}
-			);
-		}
-	};
-
-	ui.extend(openAll);
-
-	var saveAll = ui.create({
-		tag: "button",
-		content: "Save All",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "0vh",
-			left: "7.5vw"
-		}
-	});
-
-	saveAll.onclick = function() {
-
-		io.save(
-			window.localStorage.getItem("kaeonOriginData"),
-			"Kaeon Origin Workspace.op"
-		);
-	};
-
-	ui.extend(saveAll);
-
-	var openButton = ui.create({
-		tag: "button",
-		content: "Open",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "5vh",
-			left: "0vw"
-		}
-	});
-
-	openButton.onclick = function() {
-
-		if(confirm("Is the file you want to upload online?")) {
-
-			let text = null;
-
-			try {
-
-				let url = prompt("Enter the URL:");
-
-				if(url == null)
-					return;
-
-				text = io.open(url);
-			}
-
-			catch(error) {
-				return;
-			}
-
-			addTab(createTab(text));
-			setTab(currentTab);
-
-			saveData();
-		}
-
-		else {
-
-			io.open(
-				function(text) {
-
-					addTab(createTab(text));
-					setTab(currentTab);
-
-					saveData();
+		
+				else {
+		
+					window.localStorage.setItem("kaeonOriginConsole", "true");
+		
+					event.target.innerHTML = "Hide Console";
 				}
-			);
-		}
-	};
-
-	ui.extend(openButton);
-
-	var newFile = ui.create({
-		tag: "button",
-		content: "New",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "5vh",
-			left: "7.5vw"
-		}
-	});
-
-	newFile.onclick = function() {
-
-		addTab();
-		setTab(currentTab);
-
-		saveData();
-	};
-
-	ui.extend(newFile);
-
-	var remove = ui.create({
-		tag: "button",
-		content: "Remove",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "15vw",
-			top: "90vh",
-			left: "0vw"
-		}
-	});
-
-	remove.onclick = function() {
-
-		let temp = tabs[currentTab];
-		let current = false;
-
-		for(let i = 0; i < tabs.length && !current; i++) {
-
-			if(tabs[i].childNodes[0].checked && i == currentTab)
-				current = true;
-		}
-
-		currentTab = -1;
-
-		for(let i = 0; i < tabs.length; i++) {
-
-			if(tabs[i].childNodes[0].checked) {
-
-				files.removeChild(tabs[i]);
-				files.removeChild(tabs[i].line);
-
-				tabs.splice(i, 1);
-
-				i--;
 			}
 		}
-
-		for(let i = 0; i < tabs.length; i++) {
-
-			let button = tabs[i].childNodes[1];
-
-			if(!tabs[i].named)
-				ui.set(button, { content: "File " + (i + 1) });
-
-			button.index = i;
-
-			if(tabs[i] === temp)
-				setTab(i);
-		}
-
-		if(tabs.length == 0)
-			addTab();
-
-		if(current)
-			setTab(0);
-
-		saveData();
-	};
-
-	ui.extend(remove);
-
-	var files = ui.create({
-		style: {
-			overflow: "auto",
-			position: "absolute",
-			height: "80vh",
-			width: "15vw",
-			top: "10vh",
-			left: "0vw"
-		}
-	});
-
-	ui.extend(files);
-
-	var all = ui.create({
-		tag: "button",
-		content: "All",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "0vw"
-		}
-	});
-
-	all.onclick = function() {
-
-		for(let i = 0; i < tabs.length; i++)
-			tabs[i].childNodes[0].checked = true;
-	};
-
-	ui.extend(all);
-
-	var none = ui.create({
-		tag: "button",
-		content: "None",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "7.5vw"
-		}
-	});
-
-	none.onclick = function() {
-
-		for(let i = 0; i < tabs.length; i++)
-			tabs[i].childNodes[0].checked = false;
-	};
-
-	ui.extend(none);
-
-	var save = ui.create({
-		tag: "button",
-		content: "Save",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "15vw"
-		}
-	});
-
-	save.onclick = function() {
-
-		io.save(
-			text.value,
-			tabs[currentTab].named ?
-				tabs[currentTab].childNodes[1].innerHTML :
-				"File " + (currentTab + 1) + ".txt"
-		);
-	};
-
-	ui.extend(save);
-
-	var printButton = ui.create({
-		tag: "button",
-		content: "Print",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "32.5vw"
-		}
-	});
-
-	printButton.onclick = function() {
-
-		var mywindow = window.open('', 'PRINT', 'height=400,width=600');
-
-		mywindow.document.write(
-			"<pre>" +
-			text.value.
-			split("<").join("&lt;").
-			split(">").join("&gt;").
-			split("&").join("&amp;") +
-			"</pre>"
-		);
-
-		mywindow.document.close();
-		mywindow.focus();
-
-		mywindow.print();
-		mywindow.close();
-
-		return true;
-	};
-
-	ui.extend(printButton);
-
-	var text = ui.set(
-		widgets.getTextbox(),
-		{
-			style: {
-				resize: "none",
-				position: "absolute",
-				height: "85vh",
-				width: "35vw",
-				top: "5vh",
-				left: "15vw",
-				overflow: "auto"
-			}
-		}
-	);
-
-	text.onchange = saveData;
-
-	ui.extend(text);
-
-	var run = ui.create({
-		tag: "button",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: "15vw"
-		}
-	});
-
-	run.innerHTML = "Run Kaeon FUSION";
-	run.onclick = () => { onRun("fusion"); };
-
-	ui.extend(run);
-
-	var show = ui.create({
-		tag: "button",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "95vh",
-			left: "15vw"
-		}
-	});
-
-	show.innerHTML = "Show ONE";
-
-	show.onclick = function() {
-		showONE(false);
-	};
-
-	ui.extend(show);
-
-	var runJS = ui.create({
-		tag: "button",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: (15 + (35 / 3)) + "vw"
-		}
-	});
-
-	runJS.innerHTML = "Run JavaScript";
-	runJS.onclick = () => { onRun("js"); };;
-
-	ui.extend(runJS);
-
-	var runHTML = ui.create({
-		tag: "button",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: (15 + (2 * (35 / 3))) + "vw"
-		}
-	});
-
-	runHTML.innerHTML = "Render HTML";
-	runHTML.onclick = () => { onRun("html"); };;
-
-	ui.extend(runHTML);
-
-	var preprocess = ui.create({
-		tag: "button",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "95vh",
-			left: "32.5vw"
-		}
-	});
-
-	preprocess.innerHTML = "Preprocess";
-
-	preprocess.onclick = function() {
-		showONE(true);
-	};
-
-	ui.extend(preprocess);
-
-	var fullscreen = ui.create({
-		tag: "button",
-		content: "Fullscreen",
-		style: {
-			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "50vw"
-		}
-	});
-
-	fullscreen.onclick = () => { openFullscreen(display); };
-
-	ui.extend(fullscreen);
-
-	var display = ui.create({
+	},
+	{
+		attributes: { id: "display" },
 		style: {
 			overflow: "auto",
 			background: "white",
@@ -852,27 +915,22 @@ else {
 			top: "5vh",
 			left: "50vw"
 		}
-	});
-
-	ui.extend(display);
-
-	var outs = ui.create({
+	},
+	{
+		attributes: { id : "output-tabs" },
 		style: {
-			overflow: "auto",
-			background: "white",
-			"border-left": "1px solid black",
-			"white-space": "pre",
 			position: "absolute",
 			height: "90vh",
 			width: "15vw",
 			top: "0vh",
-			left: "85vw"
+			left: "85vw",
+			overflow: "auto",
+			background: "white",
+			"border-left": "1px solid black",
+			"white-space": "pre"
 		}
-	});
-
-	ui.extend(outs);
-
-	var removeOut = ui.create({
+	},
+	{
 		tag: "button",
 		content: "Remove",
 		style: {
@@ -881,40 +939,39 @@ else {
 			width: "15vw",
 			top: "90vh",
 			left: "85vw"
-		}
-	});
+		},
+		fields: {
+			onclick: () => {
 
-	removeOut.onclick = function() {
+				let current = false;
+		
+				for(let i = 0; i < outTabs.length; i++) {
+		
+					if(outTabs[i].childNodes[0].checked) {
+		
+						if(outTabs[i].button.style.background == "green")
+							current = true;
+		
+						ui.get("#output-tabs")[0].removeChild(outTabs[i]);
+						ui.get("#display")[0].removeChild(outTabs[i].frame);
+		
+						outTabs.splice(i, 1);
 
-		let current = false;
-
-		for(let i = 0; i < outTabs.length; i++) {
-
-			if(outTabs[i].childNodes[0].checked) {
-
-				if(outTabs[i].button.style.background == "green")
-					current = true;
-
-				outs.removeChild(outTabs[i]);
-				display.removeChild(outTabs[i].frame);
-
-				outTabs.splice(i, 1);
-				i--;
+						i--;
+					}
+				}
+		
+				if(current) {
+		
+					if(outTabs.length > 0) {
+						outTabs[0].button.style.background = "green";
+						outTabs[0].frame.style.display = "block";
+					}
+				}
 			}
 		}
-
-		if(current) {
-
-			if(outTabs.length > 0) {
-				outTabs[0].button.style.background = "green";
-				outTabs[0].frame.style.display = "block";
-			}
-		}
-	};
-
-	ui.extend(removeOut);
-
-	var allOut = ui.create({
+	},
+	{
 		tag: "button",
 		content: "All",
 		style: {
@@ -923,18 +980,16 @@ else {
 			width: "7.5vw",
 			top: "95vh",
 			left: "85vw"
+		},
+		fields: {
+			onclick: () => {
+
+				for(let i = 0; i < outTabs.length; i++)
+					outTabs[i].childNodes[0].checked = true;
+			}
 		}
-	});
-
-	allOut.onclick = function() {
-
-		for(let i = 0; i < outTabs.length; i++)
-			outTabs[i].childNodes[0].checked = true;
-	};
-
-	ui.extend(allOut);
-
-	var noneOut = ui.create({
+	},
+	{
 		tag: "button",
 		content: "None",
 		style: {
@@ -943,153 +998,35 @@ else {
 			width: "7.5vw",
 			top: "95vh",
 			left: "92.5vw"
+		},
+		fields: {
+			onclick: () => {
+
+				for(let i = 0; i < outTabs.length; i++)
+					outTabs[i].childNodes[0].checked = false;
+			}
 		}
-	});
-
-	noneOut.onclick = function() {
-
-		for(let i = 0; i < outTabs.length; i++)
-			outTabs[i].childNodes[0].checked = false;
-	};
-
-	ui.extend(noneOut);
-
-	function onRun(type) {
-
-		if(onRun.count == null)
-			onRun.count = 0;
-
-		onRun.count++;
-
-		ui.set(display, { style: { overflow: "auto" } });
-
-		let frame = ui.create({
-			tag: "iframe",
-			attributes: {
-				"src": window.location.href +
-					"&kaeonorigin" +
-					type +
-					"=" +
-					currentTab,
-				"frameborder": "0"
-			},
+	},
+	ui.set(
+		widgets.getTextbox(),
+		{
+			attributes: { id: "text" },
 			style: {
-				width: "100%",
-				height: "100%",
-				left: "0%",
-				top: "0%",
+				resize: "none",
 				position: "absolute",
+				height: "85vh",
+				width: "35vw",
+				top: "5vh",
+				left: "15vw",
 				overflow: "auto"
+			},
+			fields: {
+				onchange: saveData
 			}
-		});
-
-		try {
-			display.removeChild(oneText);
 		}
+	)
+]);
 
-		catch(error) {
+load();
 
-		}
-
-		ui.extend(display, frame);
-
-		var outItem = ui.create();
-
-		outItem.frame = frame;
-
-		let check = ui.create({ tag: "input" });
-		check.type = "checkbox";
-
-		let button = ui.create({
-			tag: "button",
-			content: tabs[currentTab].button.innerHTML + ": " + onRun.count
-		});
-
-		outItem.button = button;
-		
-		button.onclick = function() {
-
-			try {
-				display.removeChild(oneText);
-			}
-	
-			catch(error) {
-	
-			}
-
-			for(let i = 0; i < outTabs.length; i++) {
-				outTabs[i].button.style.background = "white";
-				outTabs[i].frame.style.display = "none";
-			}
-	
-			outItem.button.style.background = "green";
-			outItem.frame.style.display = "block";
-		};
-
-		ui.extend(outItem, check);
-		ui.extend(outItem, button);
-
-		ui.extend(outs, outItem);
-
-		outTabs.push(outItem);
-
-		for(let i = 0; i < outTabs.length; i++) {
-			outTabs[i].button.style.background = "white";
-			outTabs[i].frame.style.display = "none";
-		}
-
-		outItem.button.style.background = "green";
-		outItem.frame.style.display = "block";
-	}
-
-	oneText = ui.create({
-		tag: "textarea",
-		attributes: { spellcheck: "false" },
-		style: {
-			resize: "none",
-			overflow: "auto",
-			left: "0vw",
-			top: "0vh",
-			width: "100%",
-			height: "100%",
-			"white-space": "pre"
-		}
-	});
-
-	oneText.readOnly = true;
-
-	function showONE(preprocess) {
-
-		ui.set(display, { style: { overflow: "hidden" } });
-
-		try {
-			display.removeChild(oneText);
-		}
-
-		catch(error) {
-
-		}
-
-		for(let i = 0; i < outTabs.length; i++)
-			outTabs[i].frame.style.display = "none";
-
-		ui.extend(display, oneText);
-
-		try {
-
-			if(!preprocess)
-				oneText.value = oneSuite.write(oneSuite.parse(text.value));
-
-			else
-				oneText.value = oneSuite.preprocess(text.value);
-		}
-
-		catch(error) {
-			oneText.value = "ERROR: INVALID ONE+";
-		}
-	}
-
-	load();
-
-	setTab(0);
-}
+setTab(0);
