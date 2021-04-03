@@ -193,12 +193,14 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 
 var currentTab = 0;
 
+let inputPanel = ui.create();
+
 var oneText = ui.create({
 	tag: "textarea",
 	attributes: { spellcheck: "false" },
 	style: {
-		left: "0vw",
-		top: "0vh",
+		left: "0%",
+		top: "0%",
 		width: "100%",
 		height: "100%",
 		overflow: "auto",
@@ -211,6 +213,8 @@ var oneText = ui.create({
 });
 
 var outTabs = [];
+
+let outputPanel = ui.create();
 
 var tabs = [];
 
@@ -305,6 +309,47 @@ function load() {
 	ui.get("#text")[0].value = data.children[0].content;
 
 	setTab(0);
+}
+
+function manageScreen() {
+
+	manageScreen.mode = manageScreen.mode != null ? manageScreen.mode : "";
+
+	setInterval(() => {
+
+		let mode = screen.height <= screen.width ? "horizontal" : "vertical";
+
+		if(manageScreen.mode != mode) {
+
+			manageScreen.mode = mode;
+
+			ui.set(
+				inputPanel,
+				{
+					style: {
+						position: "absolute",
+						left: "0%",
+						top: "0%",
+						width: mode == "horizontal" ? "50%" : "100%",
+						height: mode == "horizontal" ? "100%" : "50%"
+					}
+				}
+			);
+
+			ui.set(
+				outputPanel,
+				{
+					style: {
+						position: "absolute",
+						left: mode == "horizontal" ? "50%" : "0%",
+						top: mode == "horizontal" ? "0%" : "50%",
+						width: mode == "horizontal" ? "50%" : "100%",
+						height: mode == "horizontal" ? "100%" : "50%"
+					}
+				}
+			);
+		}
+	}, 1000 / 60);
 }
 
 function onRun(type) {
@@ -491,16 +536,18 @@ ui.set(
 	}
 );
 
-ui.extend([
+ui.extend(document.documentElement, [inputPanel, outputPanel]);
+
+ui.extend(inputPanel, [
 	{
 		tag: "button",
 		content: "Open All",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "0vh",
-			left: "0vw"
+			height: "5%",
+			width: "15%",
+			top: "0%",
+			left: "0%"
 		},
 		fields: {
 			onclick: () => {
@@ -554,10 +601,10 @@ ui.extend([
 		content: "Save All",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "0vh",
-			left: "7.5vw"
+			height: "5%",
+			width: "15%",
+			top: "0%",
+			left: "15%"
 		},
 		fields: {
 			onclick: () => {
@@ -574,10 +621,10 @@ ui.extend([
 		content: "Open",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "5vh",
-			left: "0vw"
+			height: "5%",
+			width: "15%",
+			top: "5%",
+			left: "0%"
 		},
 		fields: {
 			onclick: () => {
@@ -626,10 +673,10 @@ ui.extend([
 		content: "New",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "5vh",
-			left: "7.5vw"
+			height: "5%",
+			width: "15%",
+			top: "5%",
+			left: "15%"
 		},
 		fields: {
 			onclick: () => {
@@ -646,10 +693,10 @@ ui.extend([
 		content: "Remove",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "15vw",
-			top: "90vh",
-			left: "0vw"
+			height: "5%",
+			width: "30%",
+			top: "90%",
+			left: "0%"
 		},
 		fields: {
 			onclick: () => {
@@ -705,10 +752,10 @@ ui.extend([
 		attributes: { id: "files" },
 		style: {
 			position: "absolute",
-			height: "80vh",
-			width: "15vw",
-			top: "10vh",
-			left: "0vw",
+			height: "80%",
+			width: "30%",
+			top: "10%",
+			left: "0%",
 			overflow: "auto",
 			"white-space": "pre"
 		}
@@ -718,10 +765,10 @@ ui.extend([
 		content: "All",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "0vw"
+			height: "5%",
+			width: "15%",
+			top: "95%",
+			left: "0%"
 		},
 		fields: {
 			onclick: () => {
@@ -736,10 +783,10 @@ ui.extend([
 		content: "None",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "7.5vw"
+			height: "5%",
+			width: "15%",
+			top: "95%",
+			left: "15%"
 		},
 		fields: {
 			onclick: () => {
@@ -754,10 +801,10 @@ ui.extend([
 		content: "Save",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "15vw"
+			height: "5%",
+			width: "35%",
+			top: "0%",
+			left: "30%"
 		},
 		fields: {
 			onclick: () => {
@@ -776,10 +823,10 @@ ui.extend([
 		content: "Print",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "32.5vw"
+			height: "5%",
+			width: "35%",
+			top: "0%",
+			left: "65%"
 		},
 		fields: {
 			onclick: () => {
@@ -809,10 +856,10 @@ ui.extend([
 		content: "Run Kaeon FUSION",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: "15vw"
+			height: "5%",
+			width: (70 / 3) + "%",
+			top: "90%",
+			left: "30%"
 		},
 		fields: { onclick: () => { onRun("fusion"); } }
 	},
@@ -821,10 +868,10 @@ ui.extend([
 		content: "Run JavaScript",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: (15 + (35 / 3)) + "vw"
+			height: "5%",
+			width: (70 / 3) + "%",
+			top: "90%",
+			left: (30 + (70 / 3)) + "%"
 		},
 		fields: { onclick: () => { onRun("js"); } }
 	},
@@ -833,10 +880,10 @@ ui.extend([
 		content: "Run HTML",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: (35 / 3) + "vw",
-			top: "90vh",
-			left: (15 + (2 * (35 / 3))) + "vw"
+			height: "5%",
+			width: (70 / 3) + "%",
+			top: "90%",
+			left: (30 + (2 * (70 / 3))) + "%"
 		},
 		fields: { onclick: () => { onRun("html"); } }
 	},
@@ -845,10 +892,10 @@ ui.extend([
 		content: "Show ONE",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "95vh",
-			left: "15vw"
+			height: "5%",
+			width: "35%",
+			top: "95%",
+			left: "30%"
 		},
 		fields: { onclick: () => { showONE(false); } }
 	},
@@ -857,22 +904,45 @@ ui.extend([
 		content: "Preprocess",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "95vh",
-			left: "32.5vw"
+			height: "5%",
+			width: "35%",
+			top: "95%",
+			left: "65%"
 		},
 		fields: { onclick: () => { showONE(true); } }
 	},
+	ui.set(
+		widgets.getTextbox(),
+		{
+			attributes: { id: "text" },
+			style: {
+				position: "absolute",
+				height: "85%",
+				width: "70%",
+				top: "5%",
+				left: "30%",
+				overflow: "auto",
+				resize: "none",
+				"font-family": "monospace",
+				"font-size": "16px"
+			},
+			fields: {
+				onchange: saveData
+			}
+		}
+	)
+]);
+
+ui.extend(outputPanel, [
 	{
 		tag: "button",
 		content: "Fullscreen",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "50vw"
+			height: "5%",
+			width: "35%",
+			top: "0%",
+			left: "0%"
 		},
 		fields: { onclick: () => { openFullscreen(ui.get("#display")[0]); } }
 	},	
@@ -883,10 +953,10 @@ ui.extend([
 			"Show Console",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "17.5vw",
-			top: "0vh",
-			left: "67.5vw"
+			height: "5%",
+			width: "35%",
+			top: "0%",
+			left: "35%"
 		},
 		fields: {
 			onclick: (event) => {
@@ -914,20 +984,20 @@ ui.extend([
 			background: "white",
 			"white-space": "pre",
 			position: "absolute",
-			height: "95vh",
-			width: "35vw",
-			top: "5vh",
-			left: "50vw"
+			height: "95%",
+			width: "70%",
+			top: "5%",
+			left: "0%"
 		}
 	},
 	{
 		attributes: { id : "output-tabs" },
 		style: {
 			position: "absolute",
-			height: "90vh",
-			width: "15vw",
-			top: "0vh",
-			left: "85vw",
+			height: "90%",
+			width: "30%",
+			top: "0%",
+			left: "70%",
 			overflow: "auto",
 			background: "white",
 			"border-left": "1px solid black",
@@ -939,10 +1009,10 @@ ui.extend([
 		content: "Remove",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "15vw",
-			top: "90vh",
-			left: "85vw"
+			height: "5%",
+			width: "30%",
+			top: "90%",
+			left: "70%"
 		},
 		fields: {
 			onclick: () => {
@@ -980,10 +1050,10 @@ ui.extend([
 		content: "All",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "85vw"
+			height: "5%",
+			width: "15%",
+			top: "95%",
+			left: "70%"
 		},
 		fields: {
 			onclick: () => {
@@ -998,10 +1068,10 @@ ui.extend([
 		content: "None",
 		style: {
 			position: "absolute",
-			height: "5vh",
-			width: "7.5vw",
-			top: "95vh",
-			left: "92.5vw"
+			height: "5%",
+			width: "15%",
+			top: "95%",
+			left: "85%"
 		},
 		fields: {
 			onclick: () => {
@@ -1010,29 +1080,10 @@ ui.extend([
 					outTabs[i].childNodes[0].checked = false;
 			}
 		}
-	},
-	ui.set(
-		widgets.getTextbox(),
-		{
-			attributes: { id: "text" },
-			style: {
-				position: "absolute",
-				height: "85vh",
-				width: "35vw",
-				top: "5vh",
-				left: "15vw",
-				overflow: "auto",
-				resize: "none",
-				"font-family": "monospace",
-				"font-size": "16px"
-			},
-			fields: {
-				onchange: saveData
-			}
-		}
-	)
+	}
 ]);
 
 load();
+manageScreen();
 
 setTab(0);
