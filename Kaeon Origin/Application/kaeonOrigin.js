@@ -108,16 +108,18 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 	var outputField = ui.create({
 		tag: "textarea",
 		style: {
-			"white-space": "pre",
 			position: "fixed",
 			left: "0%",
 			top: "70%",
 			width: "100%",
 			height: "30%",
-			resize: "none",
 			"z-index": "2147483647",
 			background: "white",
-			"border-top": "solid black"
+			"border-top": "solid black",
+			resize: "none",
+			"white-space": "pre",
+			"font-family": "monospace",
+			"font-size": "16px"
 		},
 		fields: {
 			readOnly: true
@@ -195,13 +197,15 @@ var oneText = ui.create({
 	tag: "textarea",
 	attributes: { spellcheck: "false" },
 	style: {
-		resize: "none",
-		overflow: "auto",
 		left: "0vw",
 		top: "0vh",
 		width: "100%",
 		height: "100%",
-		"white-space": "pre"
+		overflow: "auto",
+		resize: "none",
+		"white-space": "pre",
+		"font-family": "monospace",
+		"font-size": "16px"
 	},
 	fields: { readOnly: true }
 });
@@ -1012,13 +1016,15 @@ ui.extend([
 		{
 			attributes: { id: "text" },
 			style: {
-				resize: "none",
 				position: "absolute",
 				height: "85vh",
 				width: "35vw",
 				top: "5vh",
 				left: "15vw",
-				overflow: "auto"
+				overflow: "auto",
+				resize: "none",
+				"font-family": "monospace",
+				"font-size": "16px"
 			},
 			fields: {
 				onchange: saveData
