@@ -128,13 +128,16 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 
 	setInterval(
 		function() {
+
+			if(!document.documentElement.contains(outputField))
+				ui.extend(outputField);
 			
 			outputField.style.display =
 				window.localStorage.getItem("kaeonOriginConsole") == "true" ?
 					"block" :
 					"none";
 		},
-		100
+		1000 / 60
 	);
 
 	ui.extend(outputField);
