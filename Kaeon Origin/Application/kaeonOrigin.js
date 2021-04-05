@@ -1,4 +1,5 @@
 var moduleDependencies = {
+	bootstrap: "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
 	cors: "https://stormy-beach-14823.herokuapp.com/",
 	io: "https://raw.githubusercontent.com/Gallery-of-Kaeon/JavaScript-Utilities/master/JavaScript%20Utilities/Utilities/Data/io.js",
 	one: "https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-FUSION/master/Kaeon%20FUSION/Source/Engine/ONE.js",
@@ -17,7 +18,7 @@ var oneSuite = require(moduleDependencies.oneSuite);
 var ui = require(moduleDependencies.ui);
 var widgets = require(moduleDependencies.widgets);
 
-ui.load("https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css");
+ui.load(moduleDependencies.bootstrap);
 
 let urlArgs = {};
 
@@ -31,7 +32,9 @@ window.location.href.replace(
 if(window.localStorage.getItem("kaeonOriginConsole") == null)
 	window.localStorage.setItem("kaeonOriginConsole", "true");
 
-if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs.kaeonoriginhtml != null) {
+if(urlArgs.kaeonoriginjs != null ||
+	urlArgs.kaeonoriginfusion != null ||
+	urlArgs.kaeonoriginhtml != null) {
 
 	ui.set(
 		document.documentElement,
@@ -149,6 +152,16 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 
 		if(isJS || isHTML)
 			outputField.value += "\n";
+
+		if(outputField.value.length > 1000000) {
+
+			outputField.value = outputField.value.substring(
+				outputField.value.length - 1000000,
+				outputField.value.length
+			);
+		}
+
+		outputField.scrollTop = outputField.scrollHeight;
 	}
 
 	if(isJS) {
@@ -156,9 +169,9 @@ if(urlArgs.kaeonoriginjs != null || urlArgs.kaeonoriginfusion != null || urlArgs
 		try {
 
 			eval(
-				"(async () => {\n" +
+				"(async () => {try{\n" +
 				oneSuite.preprocess(code) +
-				"\n})();"
+				"\n}catch(error){console.log(error.stack);}})();"
 			);
 		}
 
@@ -273,7 +286,13 @@ function createTab(data, index, name) {
 		}
 	});
 
-	let tab =  ui.create({ fields: { named: name != null, button: button, data: data != null ? data : "" } });
+	let tab =  ui.create({
+		fields: {
+			named: name != null,
+			button: button,
+			data: data != null ? data : ""
+		}
+	});
 
 	ui.extend(tab, [check, button, nameButton]);
 
@@ -475,7 +494,8 @@ function saveData() {
 			if(tabs[i].named) {
 
 				one.addChild(
-					item, one.createElement(tabs[i].childNodes[1].innerHTML));
+					item, one.createElement(tabs[i].childNodes[1].innerHTML)
+				);
 			}
 		}
 		
@@ -514,8 +534,12 @@ function showONE(preprocess) {
 
 	try {
 
-		if(!preprocess)
-			oneText.value = oneSuite.write(oneSuite.parse(ui.get("#text")[0].value));
+		if(!preprocess) {
+
+			oneText.value = oneSuite.write(
+				oneSuite.parse(ui.get("#text")[0].value)
+			);
+		}
 
 		else
 			oneText.value = oneSuite.preprocess(ui.get("#text")[0].value);
@@ -556,8 +580,8 @@ ui.extend(inputPanel, [
 			onclick: () => {
 		
 				if(!confirm(
-					"This will delete the contents of the existing workspace." +
-					"\nAre you okay with this?")) {
+					"This will delete the contents of the existing workspace."
+					+ "\nAre you okay with this?")) {
 		
 					return;
 				}
@@ -590,7 +614,10 @@ ui.extend(inputPanel, [
 					io.open(
 						function(text) {
 		
-							window.localStorage.setItem("kaeonOriginData", text);
+							window.localStorage.setItem(
+								"kaeonOriginData",
+								text
+							);
 		
 							load();
 						}
@@ -834,7 +861,11 @@ ui.extend(inputPanel, [
 		fields: {
 			onclick: () => {
 
-				var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+				var mywindow = window.open(
+					'',
+					'PRINT',
+					'height=400,width=600'
+				);
 		
 				mywindow.document.write(
 					"<pre>" +
@@ -964,7 +995,8 @@ ui.extend(outputPanel, [
 		fields: {
 			onclick: (event) => {
 
-				if(window.localStorage.getItem("kaeonOriginConsole") == "true") {
+				if(window.localStorage.getItem("kaeonOriginConsole") ==
+					"true") {
 		
 					window.localStorage.setItem("kaeonOriginConsole", "false");
 		
