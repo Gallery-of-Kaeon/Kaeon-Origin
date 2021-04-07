@@ -18,8 +18,6 @@ var oneSuite = require(moduleDependencies.oneSuite);
 var ui = require(moduleDependencies.ui);
 var widgets = require(moduleDependencies.widgets);
 
-ui.load(moduleDependencies.bootstrap);
-
 let urlArgs = {};
 
 window.location.href.replace(
@@ -551,6 +549,8 @@ function showONE(preprocess) {
 }
 
 document.title = "Kaeon Origin";
+
+ui.load(moduleDependencies.bootstrap);
 
 ui.set(
 	document.documentElement,
