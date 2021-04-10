@@ -145,8 +145,14 @@ if(urlArgs.kaeonoriginjs != null ||
 
 	console.log = function() {
 
-		for(let i = 0; i < arguments.length; i++)
-			outputField.value += "" + arguments[i] + " ";
+		for(let i = 0; i < arguments.length; i++) {
+
+			outputField.value +=
+				(typeof arguments[i] == "object" ?
+					JSON.stringify(arguments[i], null, "\t") :
+					arguments[i]) +
+				((isJS || isHTML) ? " " : "");
+		}
 
 		if(isJS || isHTML)
 			outputField.value += "\n";
