@@ -119,8 +119,7 @@ if(urlArgs.kaeonoriginjs != null ||
 			"border-top": "solid black",
 			resize: "none",
 			"white-space": "pre",
-			"font-family": "monospace",
-			"font-size": "16px"
+			"font-family": "monospace"
 		},
 		fields: {
 			readOnly: true
@@ -226,8 +225,7 @@ var oneText = ui.create({
 		overflow: "auto",
 		resize: "none",
 		"white-space": "pre",
-		"font-family": "monospace",
-		"font-size": "16px"
+		"font-family": "monospace"
 	},
 	fields: { readOnly: true }
 });
@@ -564,7 +562,8 @@ ui.set(
 		style: {
 			margin: "0",
 			height: "100%",
-			overflow: "hidden"
+			overflow: "hidden",
+			"font-size": "13px"
 		}
 	}
 );
@@ -963,8 +962,7 @@ ui.extend(inputPanel, [
 				left: "30%",
 				overflow: "auto",
 				resize: "none",
-				"font-family": "monospace",
-				"font-size": "16px"
+				"font-family": "monospace"
 			},
 			fields: {
 				onchange: saveData
