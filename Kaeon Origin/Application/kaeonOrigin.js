@@ -19,11 +19,13 @@ var ui = require(moduleDependencies.ui);
 var widgets = require(moduleDependencies.widgets);
 
 let urlArgs = {};
+let rawUrlArgs = {};
 
 window.location.href.replace(
 	/[?&]+([^=&]+)=([^&]*)/gi,
 	function(match, key, value) {
 		urlArgs[key.toLowerCase()] = decodeURIComponent(value.toLowerCase());
+		rawUrlArgs[key.toLowerCase()] = decodeURIComponent(value);
 	}
 );
 
@@ -48,18 +50,42 @@ if(urlArgs.kaeonoriginjs != null ||
 	);
 
 	let code = "";
-
+	
+	var data = onePlus.readONEPlus(
+		rawUrlArgs.workspace != null ?
+			io.open(rawUrlArgs.workspace) :
+			window.localStorage.getItem("kaeonOriginData"));
+		
 	let id =
 		urlArgs.kaeonoriginjs != null ?
-			Number(urlArgs.kaeonoriginjs) :
+			urlArgs.kaeonoriginjs :
 			(urlArgs.kaeonoriginfusion != null ?
-				Number(urlArgs.kaeonoriginfusion) :
-				Number(urlArgs.kaeonoriginhtml));
-	
-	let data = window.localStorage.getItem("kaeonOriginData");
+				urlArgs.kaeonoriginfusion :
+				urlArgs.kaeonoriginhtml);
+
+	if(isNaN(id)) {
+
+		for(let i = 0; i < data.children.length; i++) {
+
+			let file = "file " + (i + 1);
+
+			if(data.children[i].children.length != 0)
+				file = data.children[i].children[0].content;
+
+			if(file.toLowerCase() == id.toLowerCase()) {
+
+				id = i;
+
+				break;
+			}
+		}
+	}
+
+	else
+		id = Number(id);
 
 	try {
-		code = onePlus.readONEPlus(data).children[id].content;
+		code = data.children[id].content;
 	}
 
 	catch(error) {
@@ -79,20 +105,16 @@ if(urlArgs.kaeonoriginjs != null ||
 
 		if(uri.startsWith("http") && uri.includes("://"))
 			return null;
-		
-		let data = onePlus.readONEPlus(
-			window.localStorage.getItem("kaeonOriginData")
-		).children;
 
-		for(let i = 0; i < data.length; i++) {
+		for(let i = 0; i < data.children.length; i++) {
 
 			let file = "file " + (i + 1);
 
-			if(data[i].children.length != 0)
-				file = data[i].children[0].content;
+			if(data.children[i].children.length != 0)
+				file = data.children[i].children[0].content;
 
 			if(file.toLowerCase() == uri.toLowerCase())
-				return data[i].content;
+				return data.children[i].content;
 		}
 
 		return "";
@@ -523,11 +545,9 @@ function setTab(index) {
 	ui.get("#text")[0].value = tabs[index].data;
 }
 
-function showONE(preprocess) {
+function showText(mode) {
 
 	ui.set(ui.get("#display")[0], { style: { overflow: "hidden" } });
-
-	
 
 	for(let i = 0; i < outTabs.length; i++)
 		outTabs[i].frame.style.display = "none";
@@ -536,15 +556,18 @@ function showONE(preprocess) {
 
 	try {
 
-		if(!preprocess) {
+		if(mode == "one") {
 
 			oneText.value = oneSuite.write(
 				oneSuite.parse(ui.get("#text")[0].value)
 			);
 		}
 
-		else
+		else if(mode == "preprocess")
 			oneText.value = oneSuite.preprocess(ui.get("#text")[0].value);
+
+		else
+			oneText.value = window.localStorage.getItem("kaeonOriginData");
 	}
 
 	catch(error) {
@@ -932,23 +955,35 @@ ui.extend(inputPanel, [
 		style: {
 			position: "absolute",
 			height: "5%",
-			width: "35%",
+			width: (70 / 3) + "%",
 			top: "95%",
 			left: "30%"
 		},
-		fields: { onclick: () => { showONE(false); } }
+		fields: { onclick: () => { showText("one"); } }
 	},
 	{
 		tag: "button",
-		content: "Preprocess",
+		content: "Show Preprocessed",
 		style: {
 			position: "absolute",
 			height: "5%",
-			width: "35%",
+			width: (70 / 3) + "%",
 			top: "95%",
-			left: "65%"
+			left: (30 + (70 / 3)) + "%"
 		},
-		fields: { onclick: () => { showONE(true); } }
+		fields: { onclick: () => { showText("preprocess"); } }
+	},
+	{
+		tag: "button",
+		content: "Show Workspace",
+		style: {
+			position: "absolute",
+			height: "5%",
+			width: (70 / 3) + "%",
+			top: "95%",
+			left: (30 + (2 * (70 / 3))) + "%"
+		},
+		fields: { onclick: () => { showText("workspace"); } }
 	},
 	ui.set(
 		widgets.getTextbox(),
