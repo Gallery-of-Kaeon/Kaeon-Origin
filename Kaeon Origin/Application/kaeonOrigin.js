@@ -155,7 +155,8 @@ if(urlArgs.kaeonoriginjs != null ||
 				ui.extend(outputField);
 			
 			outputField.style.display =
-				window.localStorage.getItem("kaeonOriginConsole") == "true" ?
+				window.localStorage.getItem("kaeonOriginConsole") == "true" &&
+					rawUrlArgs.workspace == null ?
 					"block" :
 					"none";
 		},
