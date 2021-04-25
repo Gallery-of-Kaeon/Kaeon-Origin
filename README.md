@@ -6,6 +6,8 @@ Kaeon Origin is an online programming environment for Kaeon FUSION.
 
 The application can be accessed [here](https://gallery-of-kaeon.github.io/?unitedjs=https://raw.githubusercontent.com/Gallery-of-Kaeon/Kaeon-Origin/master/Kaeon%20Origin/Application/kaeonOrigin.js).
 
+It can also be accessed at the TinyURL link [https://tinyurl.com/kaeon-origin](https://tinyurl.com/kaeon-origin).
+
 ## Use
 
 Enter your ONE+ code in the upper text area.
